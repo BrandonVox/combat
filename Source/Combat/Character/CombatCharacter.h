@@ -22,6 +22,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void AttackButtonPressed();
+
+	// Axises
+	virtual void MoveForward(float Value);
+	virtual void MoveRight(float Value);
+	virtual void LookUp(float Value);
+	virtual void Turn(float Value);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
