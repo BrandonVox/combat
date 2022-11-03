@@ -34,7 +34,9 @@ void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Pressed
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACombatCharacter::AttackButtonPressed);
-
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACombatCharacter::SprintButtonPressed);
+	// Released
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACombatCharacter::SprintButtonReleased);
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACombatCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACombatCharacter::MoveRight);
@@ -46,11 +48,25 @@ void ACombatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpeedMode = ESpeedMode::ESM_Jog;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }
 
 void ACombatCharacter::AttackButtonPressed()
 {
 
+}
+
+void ACombatCharacter::SprintButtonPressed()
+{
+	SpeedMode = ESpeedMode::ESM_Sprint;
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void ACombatCharacter::SprintButtonReleased()
+{
+	SpeedMode = ESpeedMode::ESM_Jog;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }
 
 void ACombatCharacter::MoveForward(float Value)
