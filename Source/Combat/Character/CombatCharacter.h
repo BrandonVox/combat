@@ -51,12 +51,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float JogSpeed = 500.f;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCombatComponent* CombatComponent;
 
 // Setters and Getters
 public:	
-
-
+	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 
 };

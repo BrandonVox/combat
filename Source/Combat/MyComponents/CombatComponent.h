@@ -22,6 +22,9 @@ public:
 
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
+	UFUNCTION(BlueprintCallable)
+	void ResetCombat();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Attack();
