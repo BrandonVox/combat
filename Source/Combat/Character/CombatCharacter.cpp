@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Combat/MyComponents/CombatComponent.h"
 
 ACombatCharacter::ACombatCharacter()
 {
@@ -25,6 +26,10 @@ ACombatCharacter::ACombatCharacter()
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->GravityScale = 1.75f;
 	GetCharacterMovement()->AirControl = 0.35f;
+
+	// Components
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+
 }
 
 void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -44,6 +49,15 @@ void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Turn", this, &ACombatCharacter::Turn);
 }
 
+void ACombatCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (CombatComponent)
+	{
+		CombatComponent->SetCharacter(this);
+	}
+}
+
 void ACombatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,7 +68,7 @@ void ACombatCharacter::BeginPlay()
 
 void ACombatCharacter::AttackButtonPressed()
 {
-
+	CombatComponent->RequestAttack();
 }
 
 void ACombatCharacter::SprintButtonPressed()
