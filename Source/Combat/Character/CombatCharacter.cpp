@@ -58,6 +58,11 @@ void ACombatCharacter::PostInitializeComponents()
 	}
 }
 
+UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
+{
+	return CombatComponent;
+}
+
 void ACombatCharacter::BeginPlay()
 {
 	Super::BeginPlay();

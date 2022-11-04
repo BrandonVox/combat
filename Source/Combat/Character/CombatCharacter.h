@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Combat/Types/SpeedMode.h"
+#include "Combat/Interfaces/AttackableInterface.h"
 #include "CombatCharacter.generated.h"
 
 
@@ -12,7 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCombatComponent;
 UCLASS()
-class COMBAT_API ACombatCharacter : public ACharacter
+class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
 {
 	GENERATED_BODY()
 
@@ -21,6 +22,8 @@ public:
 	// virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
+
+	UCombatComponent* GetCombat_Implementation() const;
 
 protected:
 	virtual void BeginPlay() override;
