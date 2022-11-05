@@ -7,6 +7,7 @@
 #include "AttackableInterface.generated.h"
 
 class UCombatComponent;
+class UCollisionComponent;
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, Blueprintable)
 class UAttackableInterface : public UInterface
@@ -26,4 +27,7 @@ class COMBAT_API IAttackableInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UCombatComponent* GetCombat() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UCollisionComponent* GetCollision() const;
 };

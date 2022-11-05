@@ -12,6 +12,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UCombatComponent;
+class UCollisionComponent;
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
 {
@@ -24,6 +25,7 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	UCombatComponent* GetCombat_Implementation() const;
+	UCollisionComponent* GetCollision_Implementation() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -56,6 +58,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCombatComponent* CombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCollisionComponent* CollisionComponent;
 
 // Setters and Getters
 public:	
