@@ -66,7 +66,7 @@ UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
 void ACombatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	 
 	SpeedMode = ESpeedMode::ESM_Jog;
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }

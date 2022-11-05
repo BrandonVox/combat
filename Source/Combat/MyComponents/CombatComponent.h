@@ -20,10 +20,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RequestAttack();
 
+	bool CanAttack();
+
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
 	UFUNCTION(BlueprintCallable)
 	void ResetCombat();
+
+	UFUNCTION(BlueprintCallable)
+	void ContinueCombo();
 
 protected:
 	virtual void BeginPlay() override;
@@ -40,6 +45,8 @@ private:
 	UPROPERTY()
 	ACharacter* Character;
 
+	bool bIsReachedContinueAttackPoint = false;
+	int32 AttackIndex = 0;
 // Getters and Setters
 public:	
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
