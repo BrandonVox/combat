@@ -8,6 +8,10 @@
 #include "Combat/MyComponents/CollisionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+//
+#include "GameFramework/PlayerController.h"
+#include "Combat/HUD/CombatHUD.h"
+#include "Combat/HUD/CombatWidget.h"
 
 ACombatCharacter::ACombatCharacter()
 {
@@ -75,6 +79,19 @@ void ACombatCharacter::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 
 	OnTakePointDamage.AddDynamic(this, &ACombatCharacter::OnReceivedPointDamage);
+
+	// HUD
+	APlayerController* PlayerController = Cast<APlayerController>( GetController());
+	if (PlayerController)
+	{
+		 CombatHUD = Cast<ACombatHUD> ( PlayerController->GetHUD());
+		 if (CombatHUD)
+		 {
+			 CombatHUD->CreateCombatWidget();
+			 CombatHUD->AddWidgetToViewport(CombatHUD->GetCombatWidget());
+		 }
+	}
+	
 }
 
 UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
@@ -118,20 +135,11 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 	// Spawn blood
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
 	// Play hitted animation
+	// PlayAnimMontage(HitReactMontage);
 	PlayAnimMontage(HitReactMontage);
 	// Change combat state
 	CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
 }
-
-void ACombatCharacter::PlayAnimMontage(UAnimMontage* MontageToPlay)
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && MontageToPlay)
-	{
-		AnimInstance->Montage_Play(MontageToPlay);
-	}
-}
-
 
 
 void ACombatCharacter::AttackButtonPressed()

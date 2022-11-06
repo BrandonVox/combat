@@ -17,6 +17,7 @@ class UCollisionComponent;
 class USoundCue;
 class UParticleSystem;
 class UAnimMontage;
+class ACombatHUD;
 
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
@@ -41,7 +42,6 @@ public:
 			FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
 
-	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
 protected:
 	virtual void BeginPlay() override;
@@ -85,6 +85,10 @@ private:
 	UParticleSystem* HitImpact;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitReactMontage;
+
+	// HUD
+	UPROPERTY()
+	ACombatHUD* CombatHUD;
 
 // Setters and Getters
 public:	
