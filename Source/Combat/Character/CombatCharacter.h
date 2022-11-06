@@ -13,6 +13,11 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCombatComponent;
 class UCollisionComponent;
+
+class USoundCue;
+class UParticleSystem;
+class UAnimMontage;
+
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
 {
@@ -26,6 +31,17 @@ public:
 
 	UCombatComponent* GetCombat_Implementation() const;
 	UCollisionComponent* GetCollision_Implementation() const;
+
+	UFUNCTION()
+	void OnHitActor(const FHitResult& HitResult);
+
+	UFUNCTION()
+		void OnReceivedPointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
+			FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
+			FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
+
+
+	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,6 +77,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCollisionComponent* CollisionComponent;
+
+	// Hitted
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	USoundCue* HitSound;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UParticleSystem* HitImpact;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UAnimMontage* HitReactMontage;
 
 // Setters and Getters
 public:	

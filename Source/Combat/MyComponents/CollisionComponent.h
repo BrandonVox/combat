@@ -5,7 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "CollisionComponent.generated.h"
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitActorDelegate, const FHitResult&, HitResult);
 class ACharacter;
 class AActor;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -27,6 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TraceCollision();
 
+	UPROPERTY()
+	FHitActorDelegate HitActorDelegate;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -47,6 +50,12 @@ private:
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
 	UPROPERTY(EditAnywhere)
 	TArray<AActor*> ActorsToIgnore;
+
+	UPROPERTY()
+	TArray<AActor*> HittedActors;
+
+	UPROPERTY(EditAnywhere)
+	bool bDebug;
 
 public:	
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }

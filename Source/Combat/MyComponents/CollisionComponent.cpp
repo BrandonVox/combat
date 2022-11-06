@@ -45,7 +45,7 @@ void UCollisionComponent::EnableCollision()
 void UCollisionComponent::DisableCollision()
 {
 	bIsEnablingCollision = false;
-
+	HittedActors.Empty();
 }
 
 void UCollisionComponent::TraceCollision()
@@ -61,7 +61,7 @@ void UCollisionComponent::TraceCollision()
 	FVector EndLocation = Character->GetMesh()->GetSocketLocation(EndSocketName);
 
 	// Start of Sword -> End of Sword
-	UKismetSystemLibrary::SphereTraceMultiForObjects
+	bool bHitSomething = UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
 		Character,
 		StartLocation,
@@ -70,10 +70,29 @@ void UCollisionComponent::TraceCollision()
 		TraceObjectTypes,
 		true,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
+		bDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
 		HitResults,
 		true
 	);
+
+	if (bHitSomething)
+	{
+		for (FHitResult HR : HitResults)
+		{
+			if (HR.bBlockingHit)
+			{
+				if (HR.GetActor())
+				{
+					// Luu vao mang Hitted Actors
+					if (HittedActors.Contains(HR.GetActor()) == false)
+					{
+						HittedActors.Emplace(HR.GetActor());
+						HitActorDelegate.Broadcast(HR);
+					}
+				}
+			}
+		}
+	}
 
 }
 

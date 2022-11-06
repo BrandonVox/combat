@@ -51,4 +51,6 @@ private:
 public:	
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
 		
+	FORCEINLINE void SetCombatState(ECombatState Value) { CombatState = Value; }
+	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }
 };

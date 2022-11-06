@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "Combat/MyComponents/CombatComponent.h"
 #include "Combat/MyComponents/CollisionComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ACombatCharacter::ACombatCharacter()
 {
@@ -61,7 +63,18 @@ void ACombatCharacter::PostInitializeComponents()
 	if (CollisionComponent)
 	{
 		CollisionComponent->SetCharacter(this);
+		CollisionComponent->HitActorDelegate.AddDynamic(this, &ACombatCharacter::OnHitActor);
 	}
+}
+
+void ACombatCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SpeedMode = ESpeedMode::ESM_Jog;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+
+	OnTakePointDamage.AddDynamic(this, &ACombatCharacter::OnReceivedPointDamage);
 }
 
 UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
@@ -74,13 +87,52 @@ UCollisionComponent* ACombatCharacter::GetCollision_Implementation() const
 	return CollisionComponent;
 }
 
-void ACombatCharacter::BeginPlay()
+
+// Event fired when you hit something
+void ACombatCharacter::OnHitActor(const FHitResult& HitResult)
 {
-	Super::BeginPlay();
-	 
-	SpeedMode = ESpeedMode::ESM_Jog;
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Hit Actor");
+
+	AActor* HittedActor = HitResult.GetActor();
+	if (HittedActor)
+	{
+		UGameplayStatics::ApplyPointDamage(
+			HittedActor,
+			20.f,
+			GetActorForwardVector(),
+			HitResult,
+			GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
+	}
 }
+
+// Event fired when someone hit you
+void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+	const UDamageType* DamageType, AActor* DamageCauser)
+{
+	// Sound USoundBase
+	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
+	// Spawn blood
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
+	// Play hitted animation
+	PlayAnimMontage(HitReactMontage);
+	// Change combat state
+	CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
+}
+
+void ACombatCharacter::PlayAnimMontage(UAnimMontage* MontageToPlay)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && MontageToPlay)
+	{
+		AnimInstance->Montage_Play(MontageToPlay);
+	}
+}
+
+
 
 void ACombatCharacter::AttackButtonPressed()
 {
