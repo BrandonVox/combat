@@ -48,14 +48,15 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UStatsComponent::HandleSprinting(const float& DeltaTime)
 {
-	// Update Value
-	float NewEnergy = Energy - EnergyCost_Sprint * DeltaTime;
-	Energy = FMath::Clamp(NewEnergy, 0.f, GetMaxEnergy());
+	Energy -= EnergyCost_Sprint * DeltaTime;
+	Energy = FMath::Clamp(Energy, 0.f, GetMaxEnergy());
 
-	// Update HUD
+	if (CombatCharacter == nullptr)
+	{
+		return;
+	}
+
 	CombatCharacter->UpdateEnergy_HUD(Energy, GetMaxEnergy());
-
-	// If Energy = 0, -> Jog
 	if (Energy <= 0.f)
 	{
 		CombatCharacter->Jog();
@@ -64,12 +65,13 @@ void UStatsComponent::HandleSprinting(const float& DeltaTime)
 
 void UStatsComponent::RegenEnergy(const float& DeltaTime)
 {
-	// Update Value
-	float NewEnergy = Energy + EnergyRegenPerSecond * DeltaTime;
-	Energy = FMath::Clamp(NewEnergy, 0.f, GetMaxEnergy());
+	Energy += EnergyRegenPerSecond * DeltaTime;
+	Energy = FMath::Clamp(Energy, 0.f, GetMaxEnergy());
 
-	// Update HUD
-	CombatCharacter->UpdateEnergy_HUD(Energy, GetMaxEnergy());
+	if (CombatCharacter)
+	{
+		CombatCharacter->UpdateEnergy_HUD(Energy, GetMaxEnergy());
+	}
 }
 
 
