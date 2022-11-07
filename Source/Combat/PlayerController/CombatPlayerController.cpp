@@ -28,7 +28,7 @@ void ACombatPlayerController::AddCombatWidgetToViewport()
 	}
 }
 
-void ACombatPlayerController::UpdateHealth_HUD(float NewHealth, float MaxHealth)
+void ACombatPlayerController::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
 {
 	if (CombatHUD && CombatHUD->GetCombatWidget())
 	{
@@ -36,7 +36,7 @@ void ACombatPlayerController::UpdateHealth_HUD(float NewHealth, float MaxHealth)
 	}
 }
 
-void ACombatPlayerController::UpdateEnergy_HUD(float NewEnergy, float MaxEnergy)
+void ACombatPlayerController::UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy)
 {
 	if (CombatHUD && CombatHUD->GetCombatWidget())
 	{

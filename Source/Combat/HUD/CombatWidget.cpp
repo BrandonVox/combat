@@ -4,7 +4,7 @@
 #include "CombatWidget.h"
 #include "Components/ProgressBar.h"
 
-void UCombatWidget::UpdateHealth_HUD(float NewHealth, float MaxHealth)
+void UCombatWidget::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
 {
 	if (HealthBar)
 	{
@@ -14,7 +14,7 @@ void UCombatWidget::UpdateHealth_HUD(float NewHealth, float MaxHealth)
 
 }
 
-void UCombatWidget::UpdateEnergy_HUD(float NewEnergy, float MaxEnergy)
+void UCombatWidget::UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy)
 {
 	if (EnergyBar)
 	{

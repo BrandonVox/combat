@@ -17,7 +17,7 @@ struct FStatValue
 	float MaxValue;
 };
 
-
+class ACombatCharacter;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBAT_API UStatsComponent : public UActorComponent
 {
@@ -25,14 +25,18 @@ class COMBAT_API UStatsComponent : public UActorComponent
 
 public:	
 	UStatsComponent();
-	// virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void InitStatValues();
 
 	float GetStatValue(EStatName StatNameToGet);
 	float GetMaxStatValue(EStatName StatNameToGet);
+	
 
 protected:
 	virtual void BeginPlay() override;
+
+	void HandleSprinting(const float& DeltaTime);
+	void RegenEnergy(const float& DeltaTime);
 
 private:
 	float Health = 0.f;
@@ -41,10 +45,21 @@ private:
 	UPROPERTY(EditAnywhere)
 	TMap<EStatName, FStatValue> StatMap;
 
+	UPROPERTY()
+	ACombatCharacter* CombatCharacter;
+
+	UPROPERTY(EditAnywhere)
+	float EnergyCost_Sprint = 20.f;
+
+	UPROPERTY(EditAnywhere)
+	float EnergyRegenPerSecond = 20.f;
+
 public:	
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetEnergy() const { return Energy; }
 		
 	FORCEINLINE float GetMaxHealth() const { return StatMap[EStatName::ESN_Health].MaxValue; }
 	FORCEINLINE float GetMaxEnergy() const { return StatMap[EStatName::ESN_Energy].MaxValue; }
+
+	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }
 };

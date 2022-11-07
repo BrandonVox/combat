@@ -18,6 +18,7 @@ class UCollisionComponent;
 class USoundCue;
 class UParticleSystem;
 class UAnimMontage;
+class ACombatPlayerController;
 
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
@@ -41,7 +42,12 @@ public:
 			FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
 			FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
+	void Sprint();
+	void Jog();
 
+	// HUD
+	void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
+	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 
 protected:
 	virtual void BeginPlay() override;
@@ -89,10 +95,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitReactMontage;
 
-
+	UPROPERTY()
+	ACombatPlayerController* CombatPlayerController;
 
 // Setters and Getters
 public:	
 	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }
+	FORCEINLINE bool IsSprinting() { return SpeedMode == ESpeedMode::ESM_Sprint; }
 
+	FORCEINLINE void SetSpeedMode(const ESpeedMode& Value) { SpeedMode = Value; }
 };

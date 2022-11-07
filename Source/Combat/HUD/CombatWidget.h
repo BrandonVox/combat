@@ -14,8 +14,8 @@ class COMBAT_API UCombatWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void UpdateHealth_HUD(float NewHealth, float MaxHealth);
-	void UpdateEnergy_HUD(float NewEnergy, float MaxEnergy);
+	void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
+	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 private:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;

@@ -69,6 +69,11 @@ void ACombatCharacter::PostInitializeComponents()
 		CollisionComponent->SetCharacter(this);
 		CollisionComponent->HitActorDelegate.AddDynamic(this, &ACombatCharacter::OnHitActor);
 	}
+	if (StatsComponent)
+	{
+		StatsComponent->SetCombatCharacter(this);
+		StatsComponent->InitStatValues();
+	}
 }
 
 void ACombatCharacter::BeginPlay()
@@ -81,28 +86,20 @@ void ACombatCharacter::BeginPlay()
 	OnTakePointDamage.AddDynamic(this, &ACombatCharacter::OnReceivedPointDamage);
 
 	// HUD
-	ACombatPlayerController* CombatPlayerController = Cast<ACombatPlayerController>( GetController());
+	CombatPlayerController = Cast<ACombatPlayerController>( GetController());
 	if (CombatPlayerController)
 	{
 		CombatPlayerController->CreateCombatWidget();
 		CombatPlayerController->AddCombatWidgetToViewport();
-	}
 
-	if (StatsComponent)
-	{
-		StatsComponent->InitStatValues();
 		// Update HUD
-		if (CombatPlayerController)
-		{
-			CombatPlayerController->
-				UpdateHealth_HUD(StatsComponent->GetHealth(), StatsComponent->GetMaxHealth());
+		CombatPlayerController->
+			UpdateHealth_HUD(StatsComponent->GetHealth(), StatsComponent->GetMaxHealth());
 
-			CombatPlayerController->
-				UpdateEnergy_HUD(StatsComponent->GetEnergy(), StatsComponent->GetMaxEnergy());
-		}
-
+		CombatPlayerController->
+			UpdateEnergy_HUD(StatsComponent->GetEnergy(), StatsComponent->GetMaxEnergy());
 	}
-	
+
 }
 
 UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
@@ -153,6 +150,8 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 }
 
 
+
+
 void ACombatCharacter::AttackButtonPressed()
 {
 	CombatComponent->RequestAttack();
@@ -160,14 +159,47 @@ void ACombatCharacter::AttackButtonPressed()
 
 void ACombatCharacter::SprintButtonPressed()
 {
-	SpeedMode = ESpeedMode::ESM_Sprint;
-	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	if (StatsComponent && StatsComponent->GetEnergy() > 0.f)
+	{
+		Sprint();
+	}
 }
 
 void ACombatCharacter::SprintButtonReleased()
 {
+	if (SpeedMode == ESpeedMode::ESM_Sprint)
+	{
+		Jog();
+	}
+
+}
+
+void ACombatCharacter::Sprint()
+{
+	SpeedMode = ESpeedMode::ESM_Sprint;
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void ACombatCharacter::Jog()
+{
 	SpeedMode = ESpeedMode::ESM_Jog;
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+}
+
+void ACombatCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
+{
+	if (CombatPlayerController)
+	{
+		CombatPlayerController->UpdateHealth_HUD(NewHealth, MaxHealth);
+	}
+}
+
+void ACombatCharacter::UpdateEnergy_HUD(const float& NewEnergy,const float& MaxEnergy)
+{
+	if (CombatPlayerController)
+	{
+		CombatPlayerController->UpdateEnergy_HUD(NewEnergy, MaxEnergy);
+	}
 }
 
 void ACombatCharacter::MoveForward(float Value)
