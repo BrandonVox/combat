@@ -17,7 +17,6 @@ class UCollisionComponent;
 class USoundCue;
 class UParticleSystem;
 class UAnimMontage;
-class ACombatHUD;
 
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
@@ -86,9 +85,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitReactMontage;
 
-	// HUD
-	UPROPERTY()
-	ACombatHUD* CombatHUD;
+
 
 // Setters and Getters
 public:	

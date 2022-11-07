@@ -9,9 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 //
-#include "GameFramework/PlayerController.h"
-#include "Combat/HUD/CombatHUD.h"
-#include "Combat/HUD/CombatWidget.h"
+#include "Combat/PlayerController/CombatPlayerController.h"
+
 
 ACombatCharacter::ACombatCharacter()
 {
@@ -81,15 +80,11 @@ void ACombatCharacter::BeginPlay()
 	OnTakePointDamage.AddDynamic(this, &ACombatCharacter::OnReceivedPointDamage);
 
 	// HUD
-	APlayerController* PlayerController = Cast<APlayerController>( GetController());
-	if (PlayerController)
+	ACombatPlayerController* CombatPlayerController = Cast<ACombatPlayerController>( GetController());
+	if (CombatPlayerController)
 	{
-		 CombatHUD = Cast<ACombatHUD> ( PlayerController->GetHUD());
-		 if (CombatHUD)
-		 {
-			 CombatHUD->CreateCombatWidget();
-			 CombatHUD->AddWidgetToViewport(CombatHUD->GetCombatWidget());
-		 }
+		CombatPlayerController->CreateCombatWidget();
+		CombatPlayerController->AddCombatWidgetToViewport();
 	}
 	
 }
