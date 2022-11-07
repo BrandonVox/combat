@@ -12,6 +12,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UCombatComponent;
+class UStatsComponent;
 class UCollisionComponent;
 
 class USoundCue;
@@ -76,6 +77,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCollisionComponent* CollisionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UStatsComponent* StatsComponent;
 
 	// Hitted
 	UPROPERTY(EditAnywhere, Category = Hitted)

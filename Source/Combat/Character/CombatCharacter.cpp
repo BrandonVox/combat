@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Combat/MyComponents/CombatComponent.h"
 #include "Combat/MyComponents/CollisionComponent.h"
+#include "Combat/MyComponents/StatsComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 //
@@ -36,7 +37,7 @@ ACombatCharacter::ACombatCharacter()
 	// Components
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CollisionComponent = CreateDefaultSubobject<UCollisionComponent>(TEXT("CollisionComponent"));
-
+	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
 }
 
 void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -85,6 +86,21 @@ void ACombatCharacter::BeginPlay()
 	{
 		CombatPlayerController->CreateCombatWidget();
 		CombatPlayerController->AddCombatWidgetToViewport();
+	}
+
+	if (StatsComponent)
+	{
+		StatsComponent->InitStatValues();
+		// Update HUD
+		if (CombatPlayerController)
+		{
+			CombatPlayerController->
+				UpdateHealth_HUD(StatsComponent->GetHealth(), StatsComponent->GetMaxHealth());
+
+			CombatPlayerController->
+				UpdateEnergy_HUD(StatsComponent->GetEnergy(), StatsComponent->GetMaxEnergy());
+		}
+
 	}
 	
 }

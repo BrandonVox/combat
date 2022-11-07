@@ -15,6 +15,9 @@ class COMBAT_API ACombatPlayerController : public APlayerController
 public:
 	void CreateCombatWidget();
 	void AddCombatWidgetToViewport();
+	void UpdateHealth_HUD(float NewHealth, float MaxHealth);
+	void UpdateEnergy_HUD(float NewEnergy, float MaxEnergy);
+
 
 protected:
 	virtual void BeginPlay() override;
