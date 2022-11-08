@@ -8,6 +8,7 @@
 
 
 class UProgressBar;
+class UTextBlock;
 UCLASS()
 class COMBAT_API UCombatWidget : public UUserWidget
 {
@@ -21,4 +22,17 @@ private:
 	UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* EnergyBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* HealthText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxHealthText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* EnergyText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxEnergyText;
+
+
+	UPROPERTY()
+	FString NewText;
 };
