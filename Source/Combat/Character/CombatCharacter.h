@@ -53,7 +53,6 @@ protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackButtonPressed();
-	virtual void StrongAttackButtonPressed();
 	virtual void SprintButtonPressed();
 
 	// Released

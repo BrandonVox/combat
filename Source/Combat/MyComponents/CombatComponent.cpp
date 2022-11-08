@@ -2,6 +2,7 @@
 
 #include "CombatComponent.h"
 #include "GameFramework/Character.h"
+#include "Animation/AnimInstance.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -14,12 +15,12 @@ void UCombatComponent::BeginPlay()
 	ResetCombat();
 }
 
-void UCombatComponent::RequestAttack(const EAttackType& AttackType)
+void UCombatComponent::RequestAttack()
 {
 	if (CanAttack())
 	{
 		bIsReachedContinueAttackPoint = false;
-		Attack(AttackType);
+		Attack();
 	}
 }
 
@@ -29,60 +30,38 @@ bool UCombatComponent::CanAttack()
 		CombatState == ECombatState::ECS_Free
 		|| (bIsReachedContinueAttackPoint && CombatState == ECombatState::ECS_Attack);
 	return 
-		bDesiredCombatState;
+		bDesiredCombatState
+		&& AttackAnimMontages.IsEmpty() == false
+		;
 }
 
-void UCombatComponent::Attack(const EAttackType& AttackType)
+void UCombatComponent::Attack()
 {
-	UAnimMontage* MontageToPlay = GetAttackMontageToPlay(AttackType);
-
+	UAnimMontage* MontageToPlay = AttackAnimMontages[AttackIndex];
 	if (MontageToPlay)
 	{
 		PlayAnimMontage(MontageToPlay);
 		CombatState = ECombatState::ECS_Attack;
-		LastAttackType = AttackType;
+
 		AttackIndex++;
-	}
-}
-
-UAnimMontage* UCombatComponent::GetAttackMontageToPlay(const EAttackType& AttackType)
-{
-	if (LastAttackType != AttackType)
-	{
-		AttackIndex = 0;
-	}
-
-	switch (AttackType)
-	{
-	case EAttackType::EAT_LightAttack:
-		if (LightAttackMontages.IsEmpty())
-		{
-			return nullptr;
-		}
-		if (AttackIndex > LightAttackMontages.Num() - 1)
+		// 0 1 2 
+		if (AttackIndex > AttackAnimMontages.Num() - 1)
 		{
 			AttackIndex = 0;
 		}
-		return LightAttackMontages[AttackIndex];
-	case EAttackType::EAT_StrongAttack:
-		if (StrongAttackMontages.IsEmpty())
-		{
-			return nullptr;
-		}
-		if (AttackIndex > StrongAttackMontages.Num() - 1)
-		{
-			AttackIndex = 0;
-		}
-		return StrongAttackMontages[AttackIndex];
 	}
-	return nullptr;
 }
 
 void UCombatComponent::PlayAnimMontage(UAnimMontage* MontageToPlay)
 {
-	if (Character)
+	if (Character == nullptr)
 	{
-		Character->PlayAnimMontage(MontageToPlay);
+		return;
+	}
+	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+	if (AnimInstance && MontageToPlay)
+	{
+		AnimInstance->Montage_Play(MontageToPlay);
 	}
 }
 
