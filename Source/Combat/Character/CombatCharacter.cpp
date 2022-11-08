@@ -47,6 +47,7 @@ void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Pressed
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACombatCharacter::AttackButtonPressed);
+	PlayerInputComponent->BindAction("StrongAttack", IE_Pressed, this, &ACombatCharacter::StrongAttackButtonPressed);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACombatCharacter::SprintButtonPressed);
 	// Released
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACombatCharacter::SprintButtonReleased);
@@ -151,10 +152,21 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 
 
 
-
+// Light Attack
 void ACombatCharacter::AttackButtonPressed()
 {
-	CombatComponent->RequestAttack();
+	if (CombatComponent)
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_LightAttack);
+	}
+}
+
+void ACombatCharacter::StrongAttackButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_StrongAttack);
+	}
 }
 
 void ACombatCharacter::SprintButtonPressed()
