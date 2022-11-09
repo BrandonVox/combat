@@ -74,6 +74,16 @@ UAnimMontage* UCombatComponent::GetAttackMontage(const EAttackType& AttackType)
 			AttackIndex = 0;
 		}
 		return StrongAttackMontages[AttackIndex];
+	case EAttackType::EAT_SprintAttack:
+		if (SprintAttackMontages.IsEmpty())
+		{
+			return nullptr;
+		}
+		if (AttackIndex > SprintAttackMontages.Num() - 1)
+		{
+			AttackIndex = 0;
+		}
+		return SprintAttackMontages[AttackIndex];
 	}
 	return nullptr;
 }

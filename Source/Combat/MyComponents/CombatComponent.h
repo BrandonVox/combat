@@ -47,6 +47,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animations)
 	TArray<UAnimMontage*> StrongAttackMontages;
 
+	UPROPERTY(EditAnywhere, Category = Animations)
+	TArray<UAnimMontage*> SprintAttackMontages;
+
 	UPROPERTY()
 	ACharacter* Character;
 

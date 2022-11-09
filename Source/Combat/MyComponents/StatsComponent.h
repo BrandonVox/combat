@@ -26,6 +26,7 @@ class COMBAT_API UStatsComponent : public UActorComponent
 public:	
 	UStatsComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	bool CanRegenEnergy();
 	void InitStatValues();
 
 	float GetStatValue(EStatName StatNameToGet);

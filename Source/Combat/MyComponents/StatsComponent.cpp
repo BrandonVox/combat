@@ -39,11 +39,18 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		HandleSprinting(DeltaTime);
 	}
 
-	if (CombatCharacter && CombatCharacter->IsSprinting() == false)
+	if (CanRegenEnergy())
 	{
 		RegenEnergy(DeltaTime);
 	}
 
+}
+
+bool UStatsComponent::CanRegenEnergy()
+{
+	return CombatCharacter 
+		&& CombatCharacter->IsSprinting() == false
+		&& Energy < GetMaxEnergy();
 }
 
 void UStatsComponent::HandleSprinting(const float& DeltaTime)

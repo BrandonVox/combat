@@ -157,7 +157,14 @@ void ACombatCharacter::AttackButtonPressed()
 {
 	if (CombatComponent)
 	{
-		CombatComponent->RequestAttack(EAttackType::EAT_LightAttack);
+		if (IsSprinting() == false)
+		{
+			CombatComponent->RequestAttack(EAttackType::EAT_LightAttack);
+		}
+		else
+		{
+			CombatComponent->RequestAttack(EAttackType::EAT_SprintAttack);
+		}
 	}
 }
 
@@ -212,6 +219,13 @@ void ACombatCharacter::UpdateEnergy_HUD(const float& NewEnergy,const float& MaxE
 	{
 		CombatPlayerController->UpdateEnergy_HUD(NewEnergy, MaxEnergy);
 	}
+}
+
+float ACombatCharacter::GetSpeed()
+{
+	Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	return Velocity.Size();
 }
 
 void ACombatCharacter::MoveForward(float Value)

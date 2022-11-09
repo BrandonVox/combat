@@ -49,6 +49,8 @@ public:
 	void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
 	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 
+	float GetSpeed();
+
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
@@ -99,10 +101,13 @@ private:
 	UPROPERTY()
 	ACombatPlayerController* CombatPlayerController;
 
+	UPROPERTY()
+	FVector Velocity;
+
 // Setters and Getters
 public:	
 	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }
-	FORCEINLINE bool IsSprinting() { return SpeedMode == ESpeedMode::ESM_Sprint; }
+	FORCEINLINE bool IsSprinting() { return SpeedMode == ESpeedMode::ESM_Sprint && GetSpeed() > 0.f; }
 
 	FORCEINLINE void SetSpeedMode(const ESpeedMode& Value) { SpeedMode = Value; }
 };
