@@ -84,6 +84,9 @@ UAnimMontage* UCombatComponent::GetAttackMontage(const EAttackType& AttackType)
 			AttackIndex = 0;
 		}
 		return SprintAttackMontages[AttackIndex];
+
+	case EAttackType::EAT_ChargeAttack:
+		return ChargeAttackMontage;
 	}
 	return nullptr;
 }

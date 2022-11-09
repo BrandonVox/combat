@@ -56,15 +56,19 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackButtonPressed();
 	virtual void StrongAttackButtonPressed();
+	virtual void ChargeAttackButtonPressed();
 	virtual void SprintButtonPressed();
 
 	// Released
 	virtual void SprintButtonReleased();
+	virtual void ChargeAttackButtonReleased();
 	// Axises
 	virtual void MoveForward(float Value);
 	virtual void MoveRight(float Value);
 	virtual void LookUp(float Value);
 	virtual void Turn(float Value);
+
+	void HandleChargeTimerFinish();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -104,6 +108,11 @@ private:
 	UPROPERTY()
 	FVector Velocity;
 
+	UPROPERTY()
+	FTimerHandle ChargeAttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChargeTime = 1.f;
 // Setters and Getters
 public:	
 	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }

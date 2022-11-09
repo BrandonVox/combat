@@ -48,8 +48,10 @@ void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACombatCharacter::AttackButtonPressed);
 	PlayerInputComponent->BindAction("StrongAttack", IE_Pressed, this, &ACombatCharacter::StrongAttackButtonPressed);
+	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &ACombatCharacter::ChargeAttackButtonPressed);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACombatCharacter::SprintButtonPressed);
 	// Released
+	PlayerInputComponent->BindAction("ChargeAttack", IE_Released, this, &ACombatCharacter::ChargeAttackButtonReleased);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACombatCharacter::SprintButtonReleased);
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACombatCharacter::MoveForward);
@@ -176,6 +178,35 @@ void ACombatCharacter::StrongAttackButtonPressed()
 	}
 }
 
+void ACombatCharacter::ChargeAttackButtonPressed()
+{
+	// chay timer, doi 1 khoang thoi gian sau do cho nhan vat charge attack
+	// chay timer
+	GetWorldTimerManager().SetTimer(
+		ChargeAttackTimer,
+		this,
+		&ACombatCharacter::HandleChargeTimerFinish,
+		ChargeTime
+	);
+	// sau khi timer chay xong thi minh moi attack
+}
+
+void ACombatCharacter::ChargeAttackButtonReleased()
+{
+	if (GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
+	{
+		GetWorldTimerManager().ClearTimer(ChargeAttackTimer);
+	}
+}
+
+void ACombatCharacter::HandleChargeTimerFinish()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_ChargeAttack);
+	}
+}
+
 void ACombatCharacter::SprintButtonPressed()
 {
 	if (StatsComponent && StatsComponent->GetEnergy() > 0.f)
@@ -192,6 +223,8 @@ void ACombatCharacter::SprintButtonReleased()
 	}
 
 }
+
+
 
 void ACombatCharacter::Sprint()
 {
@@ -256,6 +289,8 @@ void ACombatCharacter::Turn(float Value)
 	// Yaw
 	AddControllerYawInput(Value);
 }
+
+
 
 
 

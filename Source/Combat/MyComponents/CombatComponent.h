@@ -50,6 +50,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animations)
 	TArray<UAnimMontage*> SprintAttackMontages;
 
+	UPROPERTY(EditAnywhere, Category = Animations)
+	UAnimMontage* ChargeAttackMontage;
+
 	UPROPERTY()
 	ACharacter* Character;
 
