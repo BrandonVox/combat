@@ -224,6 +224,11 @@ void ACombatCharacter::SprintButtonPressed()
 
 void ACombatCharacter::FocusButtonPressed()
 {
+	if (FocusComponent == nullptr)
+	{
+		return;
+	}
+
 	if (FocusComponent->IsFocusing() == false)
 	{
 		FocusComponent->Focus();
@@ -304,6 +309,14 @@ const FVector ACombatCharacter::GetCameraDirection()
 		return FVector();
 	}
 	return FollowCamera->GetForwardVector();
+}
+
+void ACombatCharacter::SetControllerRotation(FRotator NewControllerRotation)
+{
+	if (CombatPlayerController)
+	{
+		CombatPlayerController->SetControlRotation(NewControllerRotation);
+	}
 }
 
 void ACombatCharacter::MoveForward(float Value)

@@ -59,6 +59,8 @@ public:
 
 	const FVector GetCameraDirection();
 
+	void SetControllerRotation(FRotator NewControllerRotation);
+
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)

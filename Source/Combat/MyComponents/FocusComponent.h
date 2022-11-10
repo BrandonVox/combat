@@ -51,6 +51,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool bDebug;
 
+	UPROPERTY(EditAnywhere)
+	float Offset_Z = 50.f;
+
+	UPROPERTY(EditAnywhere)
+	float MaxFocusLength = 500.f;
+
 public:	
 	FORCEINLINE const bool IsFocusing() { return bIsFocusing; }
 	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }

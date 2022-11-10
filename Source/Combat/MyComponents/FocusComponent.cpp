@@ -47,12 +47,40 @@ void UFocusComponent::Focus()
 void UFocusComponent::UnFocus()
 {
 	bIsFocusing = false;
+	TargetActor = nullptr;
 	// khong cho camera huong toi muc tieu nua
 }
 
 void UFocusComponent::FaceCameraAtTarget()
 {
 	// huong camera den muc tieu
+	if (TargetActor == nullptr)
+	{
+		UnFocus();
+		return;
+	}
+	
+	if (CombatCharacter == nullptr)
+	{
+		UnFocus();
+		return;
+	}
+
+	FVector StartLocation = CombatCharacter->GetActorLocation();
+	StartLocation.Z += Offset_Z;
+
+	FRotator NewControllerRotation =
+		(TargetActor->GetActorLocation() - StartLocation).Rotation();
+
+	CombatCharacter->SetControllerRotation(NewControllerRotation);
+
+	// neu khoang cach tu nguoi choi den 
+	// muc tieu qua xa thi khong cho target nua
+	const float DistanceToTarget = CombatCharacter->GetDistanceTo(TargetActor);
+	if (DistanceToTarget > MaxFocusLength)
+	{
+		UnFocus();
+	}
 }
 
 void UFocusComponent::FindTarget()
@@ -71,7 +99,7 @@ void UFocusComponent::FindTarget()
 		StartLocation + CombatCharacter->GetCameraDirection() * TraceLength;
 
 	// Start of Sword -> End of Sword
-	bool bHitSomething = UKismetSystemLibrary::SphereTraceSingleForObjects
+	UKismetSystemLibrary::SphereTraceSingleForObjects
 	(
 		CombatCharacter,
 		StartLocation,
@@ -85,7 +113,12 @@ void UFocusComponent::FindTarget()
 		true
 	);
 
-	// kiem tra neu trace trung thi set gia tri cho target actor
+
+	if (HitResult.bBlockingHit && HitResult.GetActor())
+	{
+		TargetActor = HitResult.GetActor();
+		bIsFocusing = true;
+	}
 
 
 }
