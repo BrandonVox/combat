@@ -14,6 +14,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCombatComponent;
 class UStatsComponent;
+class UFocusComponent;
 class UCollisionComponent;
 
 class USoundCue;
@@ -56,6 +57,8 @@ public:
 
 	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 
+	const FVector GetCameraDirection();
+
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
@@ -63,6 +66,7 @@ protected:
 	virtual void StrongAttackButtonPressed();
 	virtual void ChargeAttackButtonPressed();
 	virtual void SprintButtonPressed();
+	virtual void FocusButtonPressed();
 
 	// Released
 	virtual void SprintButtonReleased();
@@ -98,6 +102,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UStatsComponent* StatsComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UFocusComponent* FocusComponent;
 
 	// Hitted
 	UPROPERTY(EditAnywhere, Category = Hitted)

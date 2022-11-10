@@ -7,6 +7,7 @@
 #include "Combat/MyComponents/CombatComponent.h"
 #include "Combat/MyComponents/CollisionComponent.h"
 #include "Combat/MyComponents/StatsComponent.h"
+#include "Combat/MyComponents/FocusComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 //
@@ -38,6 +39,7 @@ ACombatCharacter::ACombatCharacter()
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CollisionComponent = CreateDefaultSubobject<UCollisionComponent>(TEXT("CollisionComponent"));
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
+	FocusComponent = CreateDefaultSubobject<UFocusComponent>(TEXT("FocusComponent"));
 }
 
 void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -50,6 +52,7 @@ void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("StrongAttack", IE_Pressed, this, &ACombatCharacter::StrongAttackButtonPressed);
 	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &ACombatCharacter::ChargeAttackButtonPressed);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACombatCharacter::SprintButtonPressed);
+	PlayerInputComponent->BindAction("Focus", IE_Pressed, this, &ACombatCharacter::FocusButtonPressed);
 	// Released
 	PlayerInputComponent->BindAction("ChargeAttack", IE_Released, this, &ACombatCharacter::ChargeAttackButtonReleased);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACombatCharacter::SprintButtonReleased);
@@ -76,6 +79,10 @@ void ACombatCharacter::PostInitializeComponents()
 	{
 		StatsComponent->SetCombatCharacter(this);
 		StatsComponent->InitStatValues();
+	}
+	if (FocusComponent)
+	{
+		FocusComponent->SetCombatCharacter(this);
 	}
 }
 
@@ -215,6 +222,18 @@ void ACombatCharacter::SprintButtonPressed()
 	}
 }
 
+void ACombatCharacter::FocusButtonPressed()
+{
+	if (FocusComponent->IsFocusing() == false)
+	{
+		FocusComponent->Focus();
+	}
+	else
+	{
+		FocusComponent->UnFocus();
+	}
+}
+
 void ACombatCharacter::SprintButtonReleased()
 {
 	if (SpeedMode == ESpeedMode::ESM_Sprint)
@@ -276,6 +295,15 @@ bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
 		return false;
 	}
 	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
+}
+
+const FVector ACombatCharacter::GetCameraDirection()
+{
+	if (FollowCamera == nullptr)
+	{
+		return FVector();
+	}
+	return FollowCamera->GetForwardVector();
 }
 
 void ACombatCharacter::MoveForward(float Value)

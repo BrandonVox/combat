@@ -44,15 +44,18 @@ private:
 	UPROPERTY(EditAnywhere)
 	FName EndSocketName;
 
-	UPROPERTY(EditAnywhere)
-	float TraceRadius = 20.f;
-	UPROPERTY(EditAnywhere)
-	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
-	UPROPERTY(EditAnywhere)
-	TArray<AActor*> ActorsToIgnore;
 
 	UPROPERTY()
 	TArray<AActor*> HittedActors;
+
+	UPROPERTY(EditAnywhere)
+	float TraceRadius = 20.f;
+
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> ActorsToIgnore;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
 
 	UPROPERTY(EditAnywhere)
 	bool bDebug;
