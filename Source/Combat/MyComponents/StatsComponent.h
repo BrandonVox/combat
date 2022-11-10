@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Combat/Types/StatName.h"
+#include "Combat/Types/AttackType.h"
 #include "StatsComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -32,7 +33,9 @@ public:
 	float GetStatValue(EStatName StatNameToGet);
 	float GetMaxStatValue(EStatName StatNameToGet);
 	
+	void DecreaseEnergyByAttackType(EAttackType AttackType);
 
+	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,11 +58,15 @@ private:
 	UPROPERTY(EditAnywhere)
 	float EnergyRegenPerSecond = 20.f;
 
+	// So nang luong ton khi dung 1 loai tan cong nao do
+	UPROPERTY(EditAnywhere)
+	TMap<EAttackType, float> EnergyCostMap_Attack;
+
 public:	
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetEnergy() const { return Energy; }
 		
-	FORCEINLINE float GetMaxHealth() const { return StatMap[EStatName::ESN_Health].MaxValue; }
+	FORCEINLINE const float GetMaxHealth() { return StatMap[EStatName::ESN_Health].MaxValue; }
 	FORCEINLINE float GetMaxEnergy() const { return StatMap[EStatName::ESN_Energy].MaxValue; }
 
 	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }

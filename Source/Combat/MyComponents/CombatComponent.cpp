@@ -1,7 +1,7 @@
 
 
 #include "CombatComponent.h"
-#include "GameFramework/Character.h"
+#include "Combat/Character/CombatCharacter.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -16,20 +16,22 @@ void UCombatComponent::BeginPlay()
 
 void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 {
-	if (CanAttack())
+	if (CanAttack(AttackType))
 	{
 		bIsReachedContinueAttackPoint = false;
 		Attack(AttackType);
 	}
 }
 
-bool UCombatComponent::CanAttack()
+bool UCombatComponent::CanAttack(EAttackType AttackType)
 {
 	bool bDesiredCombatState =
 		CombatState == ECombatState::ECS_Free
 		|| (bIsReachedContinueAttackPoint && CombatState == ECombatState::ECS_Attack);
 	return 
-		bDesiredCombatState;
+		bDesiredCombatState 
+		&& CombatCharacter 
+		&& CombatCharacter->HasEnoughEnergyForThisAttackType(AttackType);
 }
 
 void UCombatComponent::Attack(const EAttackType& AttackType)
@@ -40,6 +42,7 @@ void UCombatComponent::Attack(const EAttackType& AttackType)
 		PlayAnimMontage(MontageToPlay);
 		CombatState = ECombatState::ECS_Attack;
 		LastAttackType = AttackType;
+
 		AttackIndex++;
 		// 0 1 2 
 	}
@@ -93,9 +96,9 @@ UAnimMontage* UCombatComponent::GetAttackMontage(const EAttackType& AttackType)
 
 void UCombatComponent::PlayAnimMontage(UAnimMontage* MontageToPlay)
 {
-	if (Character)
+	if (CombatCharacter)
 	{
-		Character->PlayAnimMontage(MontageToPlay);
+		CombatCharacter->PlayAnimMontage(MontageToPlay);
 	}
 }
 
@@ -106,7 +109,9 @@ void UCombatComponent::ResetCombat()
 	bIsReachedContinueAttackPoint = false;
 }
 
+// goi khi minh cham toi diem continue combo trong animtion
 void UCombatComponent::ContinueCombo()
 {
 	bIsReachedContinueAttackPoint = true;
+	CombatCharacter->DecreaseEnergyByAttackType(LastAttackType);
 }

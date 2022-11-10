@@ -8,7 +8,7 @@
 #include "CombatComponent.generated.h"
 
 class UAnimMontage;
-class ACharacter;
+class ACombatCharacter;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBAT_API UCombatComponent : public UActorComponent
 {
@@ -21,7 +21,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RequestAttack(const EAttackType& AttackType);
 
-	bool CanAttack();
+	bool CanAttack(EAttackType AttackType);
 
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
@@ -54,7 +54,7 @@ private:
 	UAnimMontage* ChargeAttackMontage;
 
 	UPROPERTY()
-	ACharacter* Character;
+	ACombatCharacter* CombatCharacter;
 
 	bool bIsReachedContinueAttackPoint = false;
 	int32 AttackIndex = 0;
@@ -63,7 +63,7 @@ private:
 	EAttackType LastAttackType;
 // Getters and Setters
 public:	
-	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
+	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }
 		
 	FORCEINLINE void SetCombatState(ECombatState Value) { CombatState = Value; }
 	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }

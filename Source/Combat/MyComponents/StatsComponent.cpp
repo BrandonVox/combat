@@ -11,6 +11,14 @@ UStatsComponent::UStatsComponent()
 	// Init Stat map
 	StatMap.Emplace(EStatName::ESN_Health, FStatValue());
 	StatMap.Emplace(EStatName::ESN_Energy, FStatValue());
+
+	// Init Energy Map for Attacks
+	EnergyCostMap_Attack.Emplace(EAttackType::EAT_LightAttack, 0.f);
+
+	EnergyCostMap_Attack.Emplace(EAttackType::EAT_StrongAttack, 0.f);
+	EnergyCostMap_Attack.Emplace(EAttackType::EAT_SprintAttack, 0.f);
+	EnergyCostMap_Attack.Emplace(EAttackType::EAT_ChargeAttack, 0.f);
+
 }
 
 void UStatsComponent::InitStatValues()
@@ -107,6 +115,23 @@ float UStatsComponent::GetMaxStatValue(EStatName StatNameToGet)
 	}
 
 	return 0.0f;
+}
+
+
+void UStatsComponent::DecreaseEnergyByAttackType(EAttackType AttackType)
+{
+	Energy -= EnergyCostMap_Attack[AttackType];
+	Energy = FMath::Clamp(Energy, 0.f, GetMaxEnergy());
+
+	if (CombatCharacter)
+	{
+		CombatCharacter->UpdateEnergy_HUD(Energy, GetMaxEnergy());
+	}
+}
+
+bool UStatsComponent::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
+{
+	return Energy >= EnergyCostMap_Attack[AttackType];
 }
 
 

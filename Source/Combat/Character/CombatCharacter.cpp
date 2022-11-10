@@ -65,7 +65,7 @@ void ACombatCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	if (CombatComponent)
 	{
-		CombatComponent->SetCharacter(this);
+		CombatComponent->SetCombatCharacter(this);
 	}
 	if (CollisionComponent)
 	{
@@ -259,6 +259,23 @@ float ACombatCharacter::GetSpeed()
 	Velocity = GetVelocity();
 	Velocity.Z = 0.f;
 	return Velocity.Size();
+}
+
+void ACombatCharacter::DecreaseEnergyByAttackType(EAttackType AttackType)
+{
+	if (StatsComponent)
+	{
+		StatsComponent->DecreaseEnergyByAttackType(AttackType);
+	}
+}
+
+bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
 }
 
 void ACombatCharacter::MoveForward(float Value)

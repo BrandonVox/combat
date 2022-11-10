@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Combat/Types/SpeedMode.h"
+#include "Combat/Types/AttackType.h"
 #include "Combat/Interfaces/AttackableInterface.h"
 #include "CombatCharacter.generated.h"
 
@@ -50,6 +51,10 @@ public:
 	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 
 	float GetSpeed();
+
+	void DecreaseEnergyByAttackType(EAttackType AttackType);
+
+	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 
 protected:
 	virtual void BeginPlay() override;
