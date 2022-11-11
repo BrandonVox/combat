@@ -34,6 +34,8 @@ public:
 	float GetMaxStatValue(EStatName StatNameToGet);
 	
 	void DecreaseEnergyByAttackType(EAttackType AttackType);
+	
+	void DecreaseHealth(const float& AmmountHealth);
 
 	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 protected:

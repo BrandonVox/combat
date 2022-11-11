@@ -129,11 +129,20 @@ void UStatsComponent::DecreaseEnergyByAttackType(EAttackType AttackType)
 	}
 }
 
+void UStatsComponent::DecreaseHealth(const float& AmmountHealth)
+{
+	Health -= AmmountHealth;
+	Health = FMath::Clamp(Health, 0.f, GetMaxHealth());
+
+	if (CombatCharacter)
+	{
+		CombatCharacter->UpdateHealth_HUD(Health, GetMaxHealth());
+	}
+}
+
 bool UStatsComponent::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
 {
 	return Energy >= EnergyCostMap_Attack[AttackType];
 }
-
-
 
 

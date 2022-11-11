@@ -123,17 +123,18 @@ UCollisionComponent* ACombatCharacter::GetCollision_Implementation() const
 }
 
 
-// Event fired when you hit something
+// ham nay chay khi ma minh danh trung ai do
 void ACombatCharacter::OnHitActor(const FHitResult& HitResult)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Hit Actor");
 
 	AActor* HittedActor = HitResult.GetActor();
+
 	if (HittedActor)
 	{
 		UGameplayStatics::ApplyPointDamage(
 			HittedActor,
-			20.f,
+			GetDamageOfLastAttack(),
 			GetActorForwardVector(),
 			HitResult,
 			GetController(),
@@ -143,11 +144,17 @@ void ACombatCharacter::OnHitActor(const FHitResult& HitResult)
 	}
 }
 
-// Event fired when someone hit you
+// ham nay chay khi ma minh bi danh
 void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
 	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
 	const UDamageType* DamageType, AActor* DamageCauser)
 {
+	// tru mau
+	if (StatsComponent)
+	{
+		StatsComponent->DecreaseHealth(Damage);
+	}
+
 	// Sound USoundBase
 	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
 	// Spawn blood
@@ -268,6 +275,7 @@ void ACombatCharacter::UpdateHealth_HUD(const float& NewHealth, const float& Max
 	{
 		CombatPlayerController->UpdateHealth_HUD(NewHealth, MaxHealth);
 	}
+	// neu la ke dich thi update mau o tren dau luon
 }
 
 void ACombatCharacter::UpdateEnergy_HUD(const float& NewEnergy,const float& MaxEnergy)
@@ -317,6 +325,15 @@ void ACombatCharacter::SetControllerRotation(FRotator NewControllerRotation)
 	{
 		CombatPlayerController->SetControlRotation(NewControllerRotation);
 	}
+}
+
+const float ACombatCharacter::GetDamageOfLastAttack()
+{
+	if (CombatComponent == nullptr)
+	{
+		return 0.0f;
+	}
+	return CombatComponent->GetDamageOfLastAttack();
 }
 
 void ACombatCharacter::MoveForward(float Value)

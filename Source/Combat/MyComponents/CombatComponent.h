@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ContinueCombo();
 
+	const float GetDamageByAttackType(const EAttackType& AttackType);
+	const float GetDamageOfLastAttack();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Attack(const EAttackType& AttackType);
@@ -61,6 +64,9 @@ private:
 
 	UPROPERTY()
 	EAttackType LastAttackType;
+
+	UPROPERTY(EditAnywhere, Category = Damage)
+	TMap<EAttackType, float> DamageMap;
 // Getters and Setters
 public:	
 	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }

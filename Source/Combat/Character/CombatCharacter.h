@@ -48,8 +48,8 @@ public:
 	void Jog();
 
 	// HUD
-	void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
-	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
+	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
+	virtual void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 
 	float GetSpeed();
 
@@ -61,6 +61,7 @@ public:
 
 	void SetControllerRotation(FRotator NewControllerRotation);
 
+	const float GetDamageOfLastAttack();
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)

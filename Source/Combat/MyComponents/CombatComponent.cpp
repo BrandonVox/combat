@@ -6,6 +6,11 @@
 UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	DamageMap.Emplace(EAttackType::EAT_LightAttack, 0.f);
+	DamageMap.Emplace(EAttackType::EAT_StrongAttack, 0.f);
+	DamageMap.Emplace(EAttackType::EAT_SprintAttack, 0.f);
+	DamageMap.Emplace(EAttackType::EAT_ChargeAttack, 0.f);
 }
 
 void UCombatComponent::BeginPlay()
@@ -114,4 +119,14 @@ void UCombatComponent::ContinueCombo()
 {
 	bIsReachedContinueAttackPoint = true;
 	CombatCharacter->DecreaseEnergyByAttackType(LastAttackType);
+}
+
+const float UCombatComponent::GetDamageByAttackType(const EAttackType& AttackType)
+{
+	return DamageMap[AttackType];
+}
+
+const float UCombatComponent::GetDamageOfLastAttack()
+{
+	return DamageMap[LastAttackType];
 }

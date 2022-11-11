@@ -16,17 +16,21 @@ AEnemyCharacter::AEnemyCharacter()
 	WidgetComponent->AddLocalOffset( FVector(0.f, 0.f, 130.f));
 
 
-	
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()
 			->SetCollisionResponseToChannel
 			(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	}
+}
 
-
-	
-
+void AEnemyCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
+{
+	// enemy cho nen khong co hud
+	if (HealthWidget)
+	{
+		HealthWidget->UpdateHealth_HUD(NewHealth, MaxHealth);
+	}
 }
 
 void AEnemyCharacter::BeginPlay()
