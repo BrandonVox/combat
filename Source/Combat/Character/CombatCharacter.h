@@ -81,6 +81,10 @@ protected:
 
 	void HandleChargeTimerFinish();
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UStatsComponent* StatsComponent;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;
@@ -102,8 +106,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCollisionComponent* CollisionComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UStatsComponent* StatsComponent;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UFocusComponent* FocusComponent;
