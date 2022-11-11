@@ -49,3 +49,13 @@ void AEnemyCharacter::BeginPlay()
 	}
 
 }
+
+void AEnemyCharacter::HandleDead(const FVector& HitLocation)
+{
+	if (WidgetComponent)
+	{
+		WidgetComponent->SetHiddenInGame(true);
+	}
+
+	Super::HandleDead(HitLocation);
+}

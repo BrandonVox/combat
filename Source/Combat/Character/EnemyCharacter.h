@@ -16,6 +16,7 @@ public:
 	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth) override;
 protected:
 	virtual void BeginPlay() override;
+	virtual void HandleDead(const FVector& HitLocation) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

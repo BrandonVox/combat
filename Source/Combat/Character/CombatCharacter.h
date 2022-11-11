@@ -44,6 +44,8 @@ public:
 			FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
 			FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
+
+
 	void Sprint();
 	void Jog();
 
@@ -62,6 +64,8 @@ public:
 	void SetControllerRotation(FRotator NewControllerRotation);
 
 	const float GetDamageOfLastAttack();
+
+	void HandleDeadTimerFinished();
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
@@ -81,6 +85,9 @@ protected:
 	virtual void Turn(float Value);
 
 	void HandleChargeTimerFinish();
+
+	virtual void HandleHitted(const FVector& HitLocation);
+	virtual void HandleDead(const FVector& HitLocation);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -119,6 +126,18 @@ private:
 	UParticleSystem* HitImpact;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitReactMontage;
+
+	// Dead
+	UPROPERTY(EditAnywhere, Category = Dead)
+	USoundCue* DeadSound;
+	UPROPERTY(EditAnywhere, Category = Dead)
+	UAnimMontage* DeadMontage;
+
+	UPROPERTY()
+	FTimerHandle DeadTimer;
+
+	UPROPERTY(EditAnywhere, Category = Dead)
+	float DeadTime = 2.f;
 
 	UPROPERTY()
 	ACombatPlayerController* CombatPlayerController;

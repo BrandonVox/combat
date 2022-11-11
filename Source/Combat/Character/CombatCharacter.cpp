@@ -13,6 +13,8 @@
 //
 #include "Combat/PlayerController/CombatPlayerController.h"
 
+#include "Components/CapsuleComponent.h"
+
 
 ACombatCharacter::ACombatCharacter()
 {
@@ -153,19 +155,57 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 	if (StatsComponent)
 	{
 		StatsComponent->DecreaseHealth(Damage);
+		if (StatsComponent->GetHealth() <= 0.f)
+		{
+			HandleDead(HitLocation);
+		}
+		else
+		{
+			HandleHitted(HitLocation);
+		}
 	}
-
-	// Sound USoundBase
-	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
-	// Spawn blood
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
-	// Play hitted animation
-	// PlayAnimMontage(HitReactMontage);
-	PlayAnimMontage(HitReactMontage);
-	// Change combat state
-	CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
 }
 
+void ACombatCharacter::HandleHitted(const FVector& HitLocation)
+{
+	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
+	PlayAnimMontage(HitReactMontage);
+
+	if (CombatComponent)
+	{
+		CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
+	}
+}
+
+void ACombatCharacter::HandleDead(const FVector& HitLocation)
+{
+	// neu la enemy character thi minh se an thanh mau truoc khi 
+	// xu ly doan code o duoi
+	UGameplayStatics::PlaySoundAtLocation(this,	DeadSound, HitLocation);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
+	PlayAnimMontage(DeadMontage);
+
+	if (CombatComponent)
+	{
+		CombatComponent->SetCombatState(ECombatState::ECS_Dead);
+	}
+
+	//disable collision capsule component(root component)
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// xoa luon nhan vat ra khoi map sau 1 khoang thoi gian (2 s)
+	GetWorldTimerManager().SetTimer(
+		DeadTimer,
+		this,
+		&ACombatCharacter::HandleDeadTimerFinished,
+		DeadTime
+	);
+}
+
+void ACombatCharacter::HandleDeadTimerFinished()
+{
+	Destroy();
+}
 
 
 // Light Attack
@@ -335,6 +375,8 @@ const float ACombatCharacter::GetDamageOfLastAttack()
 	}
 	return CombatComponent->GetDamageOfLastAttack();
 }
+
+
 
 void ACombatCharacter::MoveForward(float Value)
 {
