@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Combat/HUD/HealthWidget.h"
 #include "Combat/MyComponents/StatsComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -15,6 +16,10 @@ AEnemyCharacter::AEnemyCharacter()
 	WidgetComponent->SetDrawAtDesiredSize(true);
 	WidgetComponent->AddLocalOffset( FVector(0.f, 0.f, 130.f));
 
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 200.f;
+	}
 
 	if (GetCapsuleComponent())
 	{
@@ -30,6 +35,14 @@ void AEnemyCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxH
 	if (HealthWidget)
 	{
 		HealthWidget->UpdateHealth_HUD(NewHealth, MaxHealth);
+	}
+}
+
+void AEnemyCharacter::ChangeMaxWalkSpeed(const float& NewValue)
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NewValue;
 	}
 }
 

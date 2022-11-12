@@ -14,6 +14,8 @@ class COMBAT_API AEnemyCharacter : public ACombatCharacter
 public:
 	AEnemyCharacter();
 	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth) override;
+	UFUNCTION(BlueprintCallable)
+	void ChangeMaxWalkSpeed(const float& NewValue);
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleDead(const FVector& HitLocation) override;
