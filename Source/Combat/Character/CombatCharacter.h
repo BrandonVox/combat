@@ -4,23 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Combat/Types/SpeedMode.h"
 #include "Combat/Types/AttackType.h"
+#include "Combat/Types/SpeedMode.h"
 #include "Combat/Interfaces/AttackableInterface.h"
 #include "CombatCharacter.generated.h"
 
 
-class USpringArmComponent;
-class UCameraComponent;
+
 class UCombatComponent;
 class UStatsComponent;
-class UFocusComponent;
 class UCollisionComponent;
 
 class USoundCue;
 class UParticleSystem;
 class UAnimMontage;
-class ACombatPlayerController;
 
 UCLASS()
 class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterface
@@ -30,7 +27,6 @@ class COMBAT_API ACombatCharacter : public ACharacter, public IAttackableInterfa
 public:
 	ACombatCharacter();
 	// virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
 
 	UCombatComponent* GetCombat_Implementation() const;
@@ -46,8 +42,7 @@ public:
 
 
 
-	void Sprint();
-	void Jog();
+
 
 	// HUD
 	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
@@ -59,32 +54,20 @@ public:
 
 	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 
-	const FVector GetCameraDirection();
 
-	void SetControllerRotation(FRotator NewControllerRotation);
 
 	const float GetDamageOfLastAttack();
 
 	void HandleDeadTimerFinished();
+
+	void Sprint();
+	void Jog();
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
-	virtual void AttackButtonPressed();
-	virtual void StrongAttackButtonPressed();
-	virtual void ChargeAttackButtonPressed();
-	virtual void SprintButtonPressed();
-	virtual void FocusButtonPressed();
 
-	// Released
-	virtual void SprintButtonReleased();
-	virtual void ChargeAttackButtonReleased();
-	// Axises
-	virtual void MoveForward(float Value);
-	virtual void MoveRight(float Value);
-	virtual void LookUp(float Value);
-	virtual void Turn(float Value);
 
-	void HandleChargeTimerFinish();
+
 
 	virtual void HandleHitted(const FVector& HitLocation);
 	virtual void HandleDead(const FVector& HitLocation);
@@ -93,31 +76,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UStatsComponent* StatsComponent;
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-	USpringArmComponent* CameraBoom;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-	UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCombatComponent* CombatComponent;
 
 	UPROPERTY()
 	ESpeedMode SpeedMode;
+private:
 
-	UPROPERTY(EditAnywhere, Category = Movement)
-	float SprintSpeed = 900.f;
-	UPROPERTY(EditAnywhere, Category = Movement)
-	float JogSpeed = 500.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UCombatComponent* CombatComponent;
+
+
+
+
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCollisionComponent* CollisionComponent;
 
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UFocusComponent* FocusComponent;
+
 
 	// Hitted
 	UPROPERTY(EditAnywhere, Category = Hitted)
@@ -139,21 +117,22 @@ private:
 	UPROPERTY(EditAnywhere, Category = Dead)
 	float DeadTime = 2.f;
 
-	UPROPERTY()
-	ACombatPlayerController* CombatPlayerController;
+
 
 	UPROPERTY()
 	FVector Velocity;
 
-	UPROPERTY()
-	FTimerHandle ChargeAttackTimer;
+	// Sprint, Jog
 
-	UPROPERTY(EditAnywhere, Category = Combat)
-	float ChargeTime = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float SprintSpeed = 900.f;
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float JogSpeed = 500.f;
+
 // Setters and Getters
 public:	
 	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 	FORCEINLINE bool IsSprinting() { return SpeedMode == ESpeedMode::ESM_Sprint && GetSpeed() > 0.f; }
-
 	FORCEINLINE void SetSpeedMode(const ESpeedMode& Value) { SpeedMode = Value; }
 };

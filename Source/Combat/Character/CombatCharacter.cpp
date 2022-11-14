@@ -1,35 +1,23 @@
 
 
 #include "CombatCharacter.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Camera/CameraComponent.h"
+
 #include "Combat/MyComponents/CombatComponent.h"
 #include "Combat/MyComponents/CollisionComponent.h"
 #include "Combat/MyComponents/StatsComponent.h"
-#include "Combat/MyComponents/FocusComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 //
-#include "Combat/PlayerController/CombatPlayerController.h"
 
 #include "Components/CapsuleComponent.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ACombatCharacter::ACombatCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	// Camera boom
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.f;
-	CameraBoom->bUsePawnControlRotation = true;
-
-	// Follow camera
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;
-
+	
 	// Character Configs
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -41,29 +29,9 @@ ACombatCharacter::ACombatCharacter()
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CollisionComponent = CreateDefaultSubobject<UCollisionComponent>(TEXT("CollisionComponent"));
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
-	FocusComponent = CreateDefaultSubobject<UFocusComponent>(TEXT("FocusComponent"));
 }
 
-void ACombatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	// Actions
-	// Pressed
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACombatCharacter::AttackButtonPressed);
-	PlayerInputComponent->BindAction("StrongAttack", IE_Pressed, this, &ACombatCharacter::StrongAttackButtonPressed);
-	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &ACombatCharacter::ChargeAttackButtonPressed);
-	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACombatCharacter::SprintButtonPressed);
-	PlayerInputComponent->BindAction("Focus", IE_Pressed, this, &ACombatCharacter::FocusButtonPressed);
-	// Released
-	PlayerInputComponent->BindAction("ChargeAttack", IE_Released, this, &ACombatCharacter::ChargeAttackButtonReleased);
-	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACombatCharacter::SprintButtonReleased);
-	// Axises
-	PlayerInputComponent->BindAxis("MoveForward", this, &ACombatCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ACombatCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("LookUp", this, &ACombatCharacter::LookUp);
-	PlayerInputComponent->BindAxis("Turn", this, &ACombatCharacter::Turn);
-}
+
 
 void ACombatCharacter::PostInitializeComponents()
 {
@@ -82,36 +50,16 @@ void ACombatCharacter::PostInitializeComponents()
 		StatsComponent->SetCombatCharacter(this);
 		StatsComponent->InitStatValues();
 	}
-	if (FocusComponent)
-	{
-		FocusComponent->SetCombatCharacter(this);
-	}
+
 }
 
 void ACombatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpeedMode = ESpeedMode::ESM_Jog;
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	Jog();
 
 	OnTakePointDamage.AddDynamic(this, &ACombatCharacter::OnReceivedPointDamage);
-
-	// HUD
-	CombatPlayerController = Cast<ACombatPlayerController>( GetController());
-	if (CombatPlayerController)
-	{
-		CombatPlayerController->CreateCombatWidget();
-		CombatPlayerController->AddCombatWidgetToViewport();
-
-		// Update HUD
-		CombatPlayerController->
-			UpdateHealth_HUD(StatsComponent->GetHealth(), StatsComponent->GetMaxHealth());
-
-		CombatPlayerController->
-			UpdateEnergy_HUD(StatsComponent->GetEnergy(), StatsComponent->GetMaxEnergy());
-	}
-
 }
 
 UCombatComponent* ACombatCharacter::GetCombat_Implementation() const
@@ -208,122 +156,14 @@ void ACombatCharacter::HandleDeadTimerFinished()
 }
 
 
-// Light Attack
-void ACombatCharacter::AttackButtonPressed()
-{
-	if (CombatComponent)
-	{
-		if (IsSprinting() == false)
-		{
-			CombatComponent->RequestAttack(EAttackType::EAT_LightAttack);
-		}
-		else
-		{
-			CombatComponent->RequestAttack(EAttackType::EAT_SprintAttack);
-		}
-	}
-}
-
-void ACombatCharacter::StrongAttackButtonPressed()
-{
-	if (CombatComponent)
-	{
-		CombatComponent->RequestAttack(EAttackType::EAT_StrongAttack);
-	}
-}
-
-void ACombatCharacter::ChargeAttackButtonPressed()
-{
-	// chay timer, doi 1 khoang thoi gian sau do cho nhan vat charge attack
-	// chay timer
-	GetWorldTimerManager().SetTimer(
-		ChargeAttackTimer,
-		this,
-		&ACombatCharacter::HandleChargeTimerFinish,
-		ChargeTime
-	);
-	// sau khi timer chay xong thi minh moi attack
-}
-
-void ACombatCharacter::ChargeAttackButtonReleased()
-{
-	if (GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
-	{
-		GetWorldTimerManager().ClearTimer(ChargeAttackTimer);
-	}
-}
-
-void ACombatCharacter::HandleChargeTimerFinish()
-{
-	if (CombatComponent)
-	{
-		CombatComponent->RequestAttack(EAttackType::EAT_ChargeAttack);
-	}
-}
-
-void ACombatCharacter::SprintButtonPressed()
-{
-	if (StatsComponent && StatsComponent->GetEnergy() > 0.f)
-	{
-		Sprint();
-	}
-}
-
-void ACombatCharacter::FocusButtonPressed()
-{
-	if (FocusComponent == nullptr)
-	{
-		return;
-	}
-
-	if (FocusComponent->IsFocusing() == false)
-	{
-		FocusComponent->Focus();
-	}
-	else
-	{
-		FocusComponent->UnFocus();
-	}
-}
-
-void ACombatCharacter::SprintButtonReleased()
-{
-	if (SpeedMode == ESpeedMode::ESM_Sprint)
-	{
-		Jog();
-	}
-
-}
-
-
-
-void ACombatCharacter::Sprint()
-{
-	SpeedMode = ESpeedMode::ESM_Sprint;
-	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-}
-
-void ACombatCharacter::Jog()
-{
-	SpeedMode = ESpeedMode::ESM_Jog;
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
-}
-
 void ACombatCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
 {
-	if (CombatPlayerController)
-	{
-		CombatPlayerController->UpdateHealth_HUD(NewHealth, MaxHealth);
-	}
-	// neu la ke dich thi update mau o tren dau luon
+
 }
 
 void ACombatCharacter::UpdateEnergy_HUD(const float& NewEnergy,const float& MaxEnergy)
 {
-	if (CombatPlayerController)
-	{
-		CombatPlayerController->UpdateEnergy_HUD(NewEnergy, MaxEnergy);
-	}
+
 }
 
 float ACombatCharacter::GetSpeed()
@@ -350,22 +190,8 @@ bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
 	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
 }
 
-const FVector ACombatCharacter::GetCameraDirection()
-{
-	if (FollowCamera == nullptr)
-	{
-		return FVector();
-	}
-	return FollowCamera->GetForwardVector();
-}
 
-void ACombatCharacter::SetControllerRotation(FRotator NewControllerRotation)
-{
-	if (CombatPlayerController)
-	{
-		CombatPlayerController->SetControlRotation(NewControllerRotation);
-	}
-}
+
 
 const float ACombatCharacter::GetDamageOfLastAttack()
 {
@@ -378,34 +204,18 @@ const float ACombatCharacter::GetDamageOfLastAttack()
 
 
 
-void ACombatCharacter::MoveForward(float Value)
+void ACombatCharacter::Sprint()
 {
-	// Yaw Pitch Roll
-	const FRotator ControlRotation = Controller->GetControlRotation();
-	const FRotator YawRotation = FRotator(0.f, ControlRotation.Yaw, 0.f);
-	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	AddMovementInput(Direction, Value);
+	SpeedMode = ESpeedMode::ESM_Sprint;
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
-void ACombatCharacter::MoveRight(float Value)
+void ACombatCharacter::Jog()
 {
-	const FRotator ControlRotation = Controller->GetControlRotation();
-	const FRotator YawRotation = FRotator(0.f, ControlRotation.Yaw, 0.f);
-	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	AddMovementInput(Direction, Value);
+	SpeedMode = ESpeedMode::ESM_Jog;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }
 
-void ACombatCharacter::LookUp(float Value)
-{
-	// Pitch
-	AddControllerPitchInput(Value);
-}
-
-void ACombatCharacter::Turn(float Value)
-{
-	// Yaw
-	AddControllerYawInput(Value);
-}
 
 
 

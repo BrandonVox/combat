@@ -6,7 +6,7 @@
 #include "FocusComponent.generated.h"
 
 class AActor;
-class ACombatCharacter;
+class APlayerCharacter;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBAT_API UFocusComponent : public UActorComponent
 {
@@ -33,7 +33,7 @@ private:
 	AActor* TargetActor;
 
 	UPROPERTY()
-	ACombatCharacter* CombatCharacter;
+	APlayerCharacter* PlayerCharacter;
 
 	// Trace
 	UPROPERTY(EditAnywhere)
@@ -59,6 +59,6 @@ private:
 
 public:	
 	FORCEINLINE const bool IsFocusing() { return bIsFocusing; }
-	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }
+	FORCEINLINE void SetPlayerCharacter(APlayerCharacter* Value) { PlayerCharacter = Value; }
 		
 };

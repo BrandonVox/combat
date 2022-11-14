@@ -2,7 +2,7 @@
 
 #include "FocusComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Combat/Character/CombatCharacter.h"
+#include "Combat/Character/PlayerCharacter.h"
 
 UFocusComponent::UFocusComponent()
 {
@@ -14,15 +14,15 @@ void UFocusComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// rat kho xay ra
-	if (CombatCharacter == nullptr)
+	if (PlayerCharacter == nullptr)
 	{
-		CombatCharacter = Cast<ACombatCharacter>( GetOwner());
+		PlayerCharacter = Cast<APlayerCharacter>( GetOwner());
 	}
 
 	// thuong xay ra
-	if (CombatCharacter)
+	if (PlayerCharacter)
 	{
-		ActorsToIgnore.Emplace(CombatCharacter);
+		ActorsToIgnore.Emplace(PlayerCharacter);
 	}
 }
 
@@ -60,23 +60,23 @@ void UFocusComponent::FaceCameraAtTarget()
 		return;
 	}
 	
-	if (CombatCharacter == nullptr)
+	if (PlayerCharacter == nullptr)
 	{
 		UnFocus();
 		return;
 	}
 
-	FVector StartLocation = CombatCharacter->GetActorLocation();
+	FVector StartLocation = PlayerCharacter->GetActorLocation();
 	StartLocation.Z += Offset_Z;
 
 	FRotator NewControllerRotation =
 		(TargetActor->GetActorLocation() - StartLocation).Rotation();
 
-	CombatCharacter->SetControllerRotation(NewControllerRotation);
+	PlayerCharacter->SetControllerRotation(NewControllerRotation);
 
 	// neu khoang cach tu nguoi choi den 
 	// muc tieu qua xa thi khong cho target nua
-	const float DistanceToTarget = CombatCharacter->GetDistanceTo(TargetActor);
+	const float DistanceToTarget = PlayerCharacter->GetDistanceTo(TargetActor);
 	if (DistanceToTarget > MaxFocusLength)
 	{
 		UnFocus();
@@ -86,7 +86,7 @@ void UFocusComponent::FaceCameraAtTarget()
 void UFocusComponent::FindTarget()
 {
 	// sphere trace de tim muc tieu
-	if (CombatCharacter == nullptr)
+	if (PlayerCharacter == nullptr)
 	{
 		return;
 	}
@@ -94,14 +94,14 @@ void UFocusComponent::FindTarget()
 	FHitResult HitResult;
 
 	// character->getcameradirection
-	const FVector StartLocation = CombatCharacter->GetActorLocation();
+	const FVector StartLocation = PlayerCharacter->GetActorLocation();
 	FVector EndLocation = 
-		StartLocation + CombatCharacter->GetCameraDirection() * TraceLength;
+		StartLocation + PlayerCharacter->GetCameraDirection() * TraceLength;
 
 	// Start of Sword -> End of Sword
 	UKismetSystemLibrary::SphereTraceSingleForObjects
 	(
-		CombatCharacter,
+		PlayerCharacter,
 		StartLocation,
 		EndLocation,
 		TraceRadius,
