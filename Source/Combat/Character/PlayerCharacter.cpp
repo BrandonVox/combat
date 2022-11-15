@@ -177,6 +177,18 @@ void APlayerCharacter::StrongAttackButtonPressed()
 
 void APlayerCharacter::ChargeAttackButtonPressed()
 {
+	if (CombatComponent
+		&& CombatComponent->GetCombatState() == ECombatState::ECS_Attack)
+	{
+		UCombatAnimInstance* CAI = Cast<UCombatAnimInstance>(GetMesh()->GetAnimInstance());
+		if (CAI && CAI->IsAnyMontagePlaying())
+		{
+			CAI->StopAllMontages(0.3f);
+			CombatComponent->ResetCombat();
+		}
+	}
+
+
 	// chay timer, doi 1 khoang thoi gian sau do cho nhan vat charge attack
 	// chay timer
 	GetWorldTimerManager().SetTimer(

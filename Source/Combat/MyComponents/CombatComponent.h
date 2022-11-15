@@ -73,4 +73,5 @@ public:
 		
 	FORCEINLINE void SetCombatState(ECombatState Value) { CombatState = Value; }
 	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }
+	FORCEINLINE EAttackType GetLastAttackType() const { return LastAttackType;}
 };
