@@ -118,9 +118,9 @@ void APlayerCharacter::UpdateEnergy_HUD(const float& NewEnergy, const float& Max
 // Focusing
 void APlayerCharacter::SetControllerRotation(FRotator NewControllerRotation)
 {
-	if (CombatPlayerController)
+	if (Controller)
 	{
-		CombatPlayerController->SetControlRotation(NewControllerRotation);
+		Controller->SetControlRotation(NewControllerRotation);
 	}
 }
 
