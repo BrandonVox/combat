@@ -25,7 +25,7 @@ public:
 	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth) override;
 	virtual void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy) override;
 
-	void SetControllerRotation(FRotator NewControllerRotation);
+	void SetControllerRotation(const FRotator& NewControllerRotation);
 
 	void SetupFocus(const bool& bDoFocus);
 protected:
