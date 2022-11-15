@@ -160,6 +160,10 @@ void ACombatCharacter::HandleDead(const FVector& HitLocation)
 		&ACombatCharacter::HandleDeadTimerFinished,
 		DeadTime
 	);
+
+	// Disable Movement
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->StopMovementImmediately();
 }
 
 void ACombatCharacter::HandleDeadTimerFinished()
