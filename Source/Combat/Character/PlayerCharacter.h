@@ -36,6 +36,7 @@ protected:
 	virtual void ChargeAttackButtonPressed();
 	virtual void SprintButtonPressed();
 	virtual void FocusButtonPressed();
+	virtual void DefendButtonPressed();
 
 	// Released
 	virtual void SprintButtonReleased();

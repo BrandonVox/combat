@@ -43,6 +43,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &APlayerCharacter::ChargeAttackButtonPressed);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::SprintButtonPressed);
 	PlayerInputComponent->BindAction("Focus", IE_Pressed, this, &APlayerCharacter::FocusButtonPressed);
+	PlayerInputComponent->BindAction("Defend", IE_Pressed, this, &APlayerCharacter::DefendButtonPressed);
 	// Released
 	PlayerInputComponent->BindAction("ChargeAttack", IE_Released, this, &APlayerCharacter::ChargeAttackButtonReleased);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::SprintButtonReleased);
@@ -238,6 +239,14 @@ void APlayerCharacter::FocusButtonPressed()
 	else
 	{
 		FocusComponent->UnFocus();
+	}
+}
+
+void APlayerCharacter::DefendButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestDefend();
 	}
 }
 

@@ -28,6 +28,14 @@ void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 	}
 }
 
+void UCombatComponent::RequestDefend()
+{
+	if (CanDefend())
+	{
+		Defend();
+	}
+}
+
 bool UCombatComponent::CanAttack(EAttackType AttackType)
 {
 	bool bDesiredCombatState =
@@ -50,6 +58,23 @@ void UCombatComponent::Attack(const EAttackType& AttackType)
 
 		AttackIndex++;
 		// 0 1 2 
+	}
+}
+
+bool UCombatComponent::CanDefend()
+{
+	return
+		CombatState == ECombatState::ECS_Free
+		&& CombatCharacter
+		&& CombatCharacter->HasEnoughEnergyForDefend();
+}
+
+void UCombatComponent::Defend()
+{
+	if (DefendMontage)
+	{
+		PlayAnimMontage(DefendMontage);
+		CombatState = ECombatState::ECS_Defend;
 	}
 }
 

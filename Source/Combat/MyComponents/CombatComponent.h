@@ -21,7 +21,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RequestAttack(const EAttackType& AttackType);
 
-	bool CanAttack(EAttackType AttackType);
+	UFUNCTION(BlueprintCallable)
+	void RequestDefend();
+
+
 
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
@@ -36,7 +39,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual bool CanAttack(EAttackType AttackType);
 	virtual void Attack(const EAttackType& AttackType);
+
+	// Defend
+	virtual bool CanDefend();
+	virtual void Defend();
 
 	UAnimMontage* GetAttackMontage(const EAttackType& AttackType);
 
@@ -44,17 +53,22 @@ private:
 	UPROPERTY()
 	ECombatState CombatState;
 
-	UPROPERTY(EditAnywhere, Category = Animations)
+	// Attack Montages
+	UPROPERTY(EditAnywhere, Category = AttackAnimations)
 	TArray<UAnimMontage*> LightAttackMontages;
 
-	UPROPERTY(EditAnywhere, Category = Animations)
+	UPROPERTY(EditAnywhere, Category = AttackAnimations)
 	TArray<UAnimMontage*> StrongAttackMontages;
 
-	UPROPERTY(EditAnywhere, Category = Animations)
+	UPROPERTY(EditAnywhere, Category = AttackAnimations)
 	TArray<UAnimMontage*> SprintAttackMontages;
 
-	UPROPERTY(EditAnywhere, Category = Animations)
+	UPROPERTY(EditAnywhere, Category = AttackAnimations)
 	UAnimMontage* ChargeAttackMontage;
+
+	// Defend Montage
+	UPROPERTY(EditAnywhere, Category = DefendAnimation)
+	UAnimMontage* DefendMontage;
 
 	UPROPERTY()
 	ACombatCharacter* CombatCharacter;

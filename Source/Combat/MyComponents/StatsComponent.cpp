@@ -56,10 +56,12 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 bool UStatsComponent::CanRegenEnergy()
 {
-	return CombatCharacter 
+	return 
+		Energy < GetMaxEnergy()
+		&& CombatCharacter
 		&& CombatCharacter->IsSprinting() == false
-		&& Energy < GetMaxEnergy()
-		&& CombatCharacter->IsAttacking() == false;
+		&& CombatCharacter->IsAttacking() == false
+		&& CombatCharacter->IsDefending() == false;
 }
 
 void UStatsComponent::HandleSprinting(const float& DeltaTime)
@@ -138,6 +140,17 @@ void UStatsComponent::DecreaseHealth(const float& AmmountHealth)
 	if (CombatCharacter)
 	{
 		CombatCharacter->UpdateHealth_HUD(Health, GetMaxHealth());
+	}
+}
+
+void UStatsComponent::DecreaseEnergy(const float& AmmountEnergy)
+{
+	Energy -= AmmountEnergy;
+	Energy = FMath::Clamp(Energy, 0.f, GetMaxEnergy());
+
+	if (CombatCharacter)
+	{
+		CombatCharacter->UpdateEnergy_HUD(Energy, GetMaxEnergy());
 	}
 }
 

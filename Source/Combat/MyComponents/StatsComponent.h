@@ -36,6 +36,7 @@ public:
 	void DecreaseEnergyByAttackType(EAttackType AttackType);
 	
 	void DecreaseHealth(const float& AmmountHealth);
+	void DecreaseEnergy(const float& AmmountEnergy);
 
 	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
 protected:
@@ -54,11 +55,16 @@ private:
 	UPROPERTY()
 	ACombatCharacter* CombatCharacter;
 
+	// Sprint
 	UPROPERTY(EditAnywhere)
 	float EnergyCost_Sprint = 20.f;
 
 	UPROPERTY(EditAnywhere)
 	float EnergyRegenPerSecond = 20.f;
+
+	// Defend
+	UPROPERTY(EditAnywhere)
+	float EnergyCost_Defend = 20.f;
 
 	// So nang luong ton khi dung 1 loai tan cong nao do
 	UPROPERTY(EditAnywhere)
@@ -72,4 +78,6 @@ public:
 	FORCEINLINE float GetMaxEnergy() const { return StatMap[EStatName::ESN_Energy].MaxValue; }
 
 	FORCEINLINE void SetCombatCharacter(ACombatCharacter* Value) { CombatCharacter = Value; }
+
+	FORCEINLINE float GetEnergyCost_Defend() const { return EnergyCost_Defend; }
 };

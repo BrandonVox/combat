@@ -53,7 +53,7 @@ public:
 	void DecreaseEnergyByAttackType(EAttackType AttackType);
 
 	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
-
+	bool HasEnoughEnergyForDefend();
 
 
 	const float GetDamageOfLastAttack();
@@ -66,7 +66,7 @@ public:
 	bool IsDead();
 
 	const bool IsAttacking();
-
+	const bool IsDefending();
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
@@ -99,7 +99,11 @@ private:
 	UCollisionComponent* CollisionComponent;
 
 
-
+	// Defend
+	UPROPERTY(EditAnywhere, Category = Defend)
+	USoundCue* DefendSound;
+	UPROPERTY(EditAnywhere, Category = Defend)
+	UParticleSystem* DefendHitImpact;
 
 
 	// Hitted

@@ -99,6 +99,18 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
 	const UDamageType* DamageType, AActor* DamageCauser)
 {
+
+	if (IsDefending())
+	{
+		if (StatsComponent)
+		{
+			StatsComponent->DecreaseEnergy(StatsComponent->GetEnergyCost_Defend());
+		}
+		UGameplayStatics::PlaySoundAtLocation(this, DefendSound, HitLocation);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DefendHitImpact, HitLocation, FRotator());
+		return;
+	}
+
 	// tru mau
 	if (StatsComponent)
 	{
@@ -206,6 +218,15 @@ bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
 	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
 }
 
+bool ACombatCharacter::HasEnoughEnergyForDefend()
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->GetEnergy() >= StatsComponent->GetEnergyCost_Defend();
+}
+
 
 
 
@@ -248,6 +269,15 @@ const bool ACombatCharacter::IsAttacking()
 		return false;
 	}
 	return CombatComponent->GetCombatState() == ECombatState::ECS_Attack;
+}
+
+const bool ACombatCharacter::IsDefending()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->GetCombatState() == ECombatState::ECS_Defend;
 }
 
 
