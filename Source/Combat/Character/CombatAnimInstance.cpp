@@ -2,39 +2,42 @@
 
 
 #include "CombatAnimInstance.h"
-#include "GameFramework/Character.h"
+#include "CombatCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UCombatAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	Character = Cast<ACharacter>(TryGetPawnOwner());
+	CombatCharacter = Cast<ACombatCharacter>(TryGetPawnOwner());
 }
 
 void UCombatAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (Character == nullptr)
+	if (CombatCharacter == nullptr)
 	{
-		Character = Cast<ACharacter>(TryGetPawnOwner());
+		CombatCharacter = Cast<ACombatCharacter>(TryGetPawnOwner());
 	}
-	if (Character == nullptr)
+	if (CombatCharacter == nullptr)
 	{
 		return;
 	}
 
-	Velocity = Character->GetVelocity();
+	Velocity = CombatCharacter->GetVelocity();
 	Velocity.Z = 0.f;
 	Speed = Velocity.Size();
 
-	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
+	bIsAccelerating = CombatCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 
-	bIsInAir = Character->GetCharacterMovement()->IsFalling();
+	bIsInAir = CombatCharacter->GetCharacterMovement()->IsFalling();
 
 	// Strafing
 	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
-	FRotator AimRotation = Character->GetBaseAimRotation();
+	FRotator AimRotation = CombatCharacter->GetBaseAimRotation();
 	Strafing_Yaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
+	
+	// 
+	bIsSprinting = CombatCharacter->GetSpeedMode() == ESpeedMode::ESM_Sprint;
 }

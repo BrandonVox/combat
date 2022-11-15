@@ -9,7 +9,7 @@
 /**
  * 
  */
-class ACharacter;
+class ACombatCharacter;
 UCLASS()
 class COMBAT_API UCombatAnimInstance : public UAnimInstance
 {
@@ -20,7 +20,7 @@ public:
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
-	ACharacter* Character;
+	ACombatCharacter* CombatCharacter;
 
 	UPROPERTY()
 	FVector Velocity;
@@ -39,6 +39,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
 	bool bIsFocusing;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
+	bool bIsSprinting;
 
 public:
 	FORCEINLINE void SetIsFocusing(const bool& NewValue) { bIsFocusing = NewValue; }

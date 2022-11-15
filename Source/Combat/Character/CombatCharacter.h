@@ -138,4 +138,5 @@ public:
 	FORCEINLINE UFUNCTION(BlueprintCallable) UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 	FORCEINLINE bool IsSprinting() { return SpeedMode == ESpeedMode::ESM_Sprint && GetSpeed() > 0.f; }
 	FORCEINLINE void SetSpeedMode(const ESpeedMode& Value) { SpeedMode = Value; }
+	FORCEINLINE ESpeedMode GetSpeedMode() const { return SpeedMode; }
 };
