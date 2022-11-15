@@ -72,7 +72,7 @@ protected:
 
 
 
-	virtual void HandleHitted(const FVector& HitLocation);
+	virtual void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
 	virtual void HandleDead(const FVector& HitLocation);
 
 protected:
@@ -105,8 +105,12 @@ private:
 	USoundCue* HitSound;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UParticleSystem* HitImpact;
+
 	UPROPERTY(EditAnywhere, Category = Hitted)
-	UAnimMontage* HitReactMontage;
+	UAnimMontage* HitReactMontage_Behind;
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UAnimMontage* HitReactMontage_Front;
 
 	// Dead
 	UPROPERTY(EditAnywhere, Category = Dead)

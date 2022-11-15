@@ -109,17 +109,29 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 		}
 		else
 		{
-			HandleHitted(HitLocation);
+			HandleHitted(HitLocation, ShotFromDirection);
 		}
 	}
 }
 
-void ACombatCharacter::HandleHitted(const FVector& HitLocation)
+void ACombatCharacter::HandleHitted(const FVector& HitLocation,const FVector& ShotFromDirection)
 {
 	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
-	PlayAnimMontage(HitReactMontage);
 
+	float DotProductValue = FVector::DotProduct(GetActorForwardVector(), ShotFromDirection);
+	// FString DotProductString = FString::SanitizeFloat(DotProductValue);
+	// GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, DotProductString);
+	if (DotProductValue > 0.f)
+	{
+		PlayAnimMontage(HitReactMontage_Behind);
+	}
+	else
+	{
+		PlayAnimMontage(HitReactMontage_Front);
+	}
+
+		
 	if (CombatComponent)
 	{
 		CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
