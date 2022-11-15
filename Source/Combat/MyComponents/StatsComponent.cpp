@@ -58,7 +58,8 @@ bool UStatsComponent::CanRegenEnergy()
 {
 	return CombatCharacter 
 		&& CombatCharacter->IsSprinting() == false
-		&& Energy < GetMaxEnergy();
+		&& Energy < GetMaxEnergy()
+		&& CombatCharacter->IsAttacking() == false;
 }
 
 void UStatsComponent::HandleSprinting(const float& DeltaTime)

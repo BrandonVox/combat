@@ -65,6 +65,8 @@ public:
 
 	bool IsDead();
 
+	const bool IsAttacking();
+
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)

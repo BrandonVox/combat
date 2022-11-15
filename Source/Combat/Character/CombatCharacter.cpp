@@ -241,6 +241,15 @@ bool ACombatCharacter::IsDead()
 	return CombatComponent->GetCombatState() == ECombatState::ECS_Dead;
 }
 
+const bool ACombatCharacter::IsAttacking()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->GetCombatState() == ECombatState::ECS_Attack;
+}
+
 
 
 
