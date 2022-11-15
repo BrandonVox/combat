@@ -47,14 +47,14 @@ void UFocusComponent::Focus()
 void UFocusComponent::UnFocus()
 {
 	bIsFocusing = false;
-	TargetActor = nullptr;
-	// khong cho camera huong toi muc tieu nua
+	PlayerCharacter->SetupFocus(false);
+	TargetCharacter = nullptr;
 }
 
 void UFocusComponent::FaceCameraAtTarget()
 {
 	// huong camera den muc tieu
-	if (TargetActor == nullptr)
+	if (TargetCharacter == nullptr || TargetCharacter->IsDead())
 	{
 		UnFocus();
 		return;
@@ -70,13 +70,13 @@ void UFocusComponent::FaceCameraAtTarget()
 	StartLocation.Z += Offset_Z;
 
 	FRotator NewControllerRotation =
-		(TargetActor->GetActorLocation() - StartLocation).Rotation();
+		(TargetCharacter->GetActorLocation() - StartLocation).Rotation();
 
 	PlayerCharacter->SetControllerRotation(NewControllerRotation);
 
 	// neu khoang cach tu nguoi choi den 
 	// muc tieu qua xa thi khong cho target nua
-	const float DistanceToTarget = PlayerCharacter->GetDistanceTo(TargetActor);
+	const float DistanceToTarget = PlayerCharacter->GetDistanceTo(TargetCharacter);
 	if (DistanceToTarget > MaxFocusLength)
 	{
 		UnFocus();
@@ -116,8 +116,9 @@ void UFocusComponent::FindTarget()
 
 	if (HitResult.bBlockingHit && HitResult.GetActor())
 	{
-		TargetActor = HitResult.GetActor();
+		TargetCharacter = Cast<ACombatCharacter>(HitResult.GetActor());
 		bIsFocusing = true;
+		PlayerCharacter->SetupFocus(true);
 	}
 
 

@@ -4,6 +4,7 @@
 #include "CombatAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UCombatAnimInstance::NativeInitializeAnimation()
 {
@@ -31,4 +32,9 @@ void UCombatAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 
 	bIsInAir = Character->GetCharacterMovement()->IsFalling();
+
+	// Strafing
+	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
+	FRotator AimRotation = Character->GetBaseAimRotation();
+	Strafing_Yaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
 }

@@ -216,6 +216,15 @@ void ACombatCharacter::Jog()
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }
 
+bool ACombatCharacter::IsDead()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->GetCombatState() == ECombatState::ECS_Dead;
+}
+
 
 
 

@@ -5,8 +5,8 @@
 #include "Components/ActorComponent.h"
 #include "FocusComponent.generated.h"
 
-class AActor;
 class APlayerCharacter;
+class ACombatCharacter;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBAT_API UFocusComponent : public UActorComponent
 {
@@ -30,7 +30,7 @@ private:
 	bool bIsFocusing = false;
 
 	UPROPERTY()
-	AActor* TargetActor;
+	ACombatCharacter* TargetCharacter;
 
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;

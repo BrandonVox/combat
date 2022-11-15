@@ -33,4 +33,13 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
 	bool bIsAccelerating;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
+	float Strafing_Yaw;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = Character)
+	bool bIsFocusing;
+
+public:
+	FORCEINLINE void SetIsFocusing(const bool& NewValue) { bIsFocusing = NewValue; }
 };

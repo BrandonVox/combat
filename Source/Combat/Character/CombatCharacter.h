@@ -62,6 +62,9 @@ public:
 
 	void Sprint();
 	void Jog();
+
+	bool IsDead();
+
 protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)

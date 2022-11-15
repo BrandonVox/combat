@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Combat/PlayerController/CombatPlayerController.h"
+#include "CombatAnimInstance.h"
 
 
 
@@ -120,6 +121,33 @@ void APlayerCharacter::SetControllerRotation(FRotator NewControllerRotation)
 	if (CombatPlayerController)
 	{
 		CombatPlayerController->SetControlRotation(NewControllerRotation);
+	}
+}
+
+void APlayerCharacter::SetupFocus(const bool& bDoFocus)
+{
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
+
+	UCombatAnimInstance* CAI = Cast<UCombatAnimInstance>(GetMesh()->GetAnimInstance());
+
+	if (CAI)
+	{
+		CAI->SetIsFocusing(bDoFocus);
+	}
+
+	if (bDoFocus)
+	{
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+
+	}
+	else
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
 
