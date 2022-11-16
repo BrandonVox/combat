@@ -60,7 +60,9 @@ public:
 
 	void HandleDeadTimerFinished();
 
+	UFUNCTION(BlueprintCallable)
 	void Sprint();
+	UFUNCTION(BlueprintCallable)
 	void Jog();
 
 	bool IsDead();
