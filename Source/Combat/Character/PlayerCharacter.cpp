@@ -68,9 +68,6 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
-
 	// Set Player Controller
 	CombatPlayerController = Cast<ACombatPlayerController>(GetController());
 	if (CombatPlayerController)

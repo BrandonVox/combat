@@ -19,12 +19,24 @@ class COMBAT_API ACombatHUD : public AHUD
 public:
 	void CreateCombatWidget();
 	void AddWidgetToViewport(UUserWidget* WidgetToShow);
+
+	void CreateMenuWidget();
 private:
+	// Combat
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TSubclassOf<UUserWidget> CombatWidgetClass;
 
 	UPROPERTY()
 	UCombatWidget* CombatWidget;
+
+	// Menu
+	UPROPERTY(EditAnywhere, Category = Menu)
+	TSubclassOf<UUserWidget> MenuWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* MenuWidget;
 public:
 	FORCEINLINE UCombatWidget* GetCombatWidget() const { return CombatWidget; }
+	FORCEINLINE UUserWidget* GetMenuWidget() const { return MenuWidget; }
+
 };

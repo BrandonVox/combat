@@ -5,10 +5,34 @@
 #include "Combat/HUD/CombatWidget.h"
 
 
+void ACombatPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	InputComponent->BindAction("OpenMenu", IE_Pressed, this, &ACombatPlayerController::OpenMenuButtonPressed);
+}
+
 void ACombatPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	CombatHUD = Cast<ACombatHUD>(GetHUD());
+
+	// Menu Widget
+	if (CombatHUD)
+	{
+		CombatHUD->CreateMenuWidget();
+	}
+}
+
+void ACombatPlayerController::OpenMenuButtonPressed()
+{
+	if (CombatHUD && CombatHUD->GetMenuWidget())
+	{
+		CombatHUD->GetMenuWidget()->AddToViewport();
+		// sau khi hien menu thi minh muon hien con tro chuot
+		// focus mode -> UI
+		SetInputMode(FInputModeUIOnly());
+		SetShowMouseCursor(true);
+	}
 }
 
 void ACombatPlayerController::CreateCombatWidget()

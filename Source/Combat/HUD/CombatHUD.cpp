@@ -21,3 +21,12 @@ void ACombatHUD::AddWidgetToViewport(UUserWidget* WidgetToShow)
 		WidgetToShow->AddToViewport();
 	}
 }
+
+void ACombatHUD::CreateMenuWidget()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && MenuWidgetClass)
+	{
+		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
+	}
+}
