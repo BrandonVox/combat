@@ -33,7 +33,7 @@ public:
 	UCollisionComponent* GetCollision_Implementation() const;
 
 	UFUNCTION()
-	void OnHitActor(const FHitResult& HitResult);
+	virtual void OnHitActor(const FHitResult& HitResult);
 
 	UFUNCTION()
 		void OnReceivedPointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,

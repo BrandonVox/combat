@@ -86,6 +86,21 @@ void AEnemyCharacter::ChangeMaxWalkSpeed(const float& NewValue)
 	}
 }
 
+void AEnemyCharacter::OnHitActor(const FHitResult& HitResult)
+{
+	AActor* HittedActor = HitResult.GetActor();
+	if (HittedActor && HittedActor->GetClass())
+	{
+		bool bIsAlly = HittedActor->GetClass()->IsChildOf(AEnemyCharacter::StaticClass());
+		if (bIsAlly)
+		{
+			return;
+		}
+	}
+
+	Super::OnHitActor(HitResult);
+}
+
 
 
 void AEnemyCharacter::HandleDead(const FVector& HitLocation)

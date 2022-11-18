@@ -17,6 +17,8 @@ public:
 	virtual void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy) override;
 	UFUNCTION(BlueprintCallable)
 	void ChangeMaxWalkSpeed(const float& NewValue);
+
+	void OnHitActor(const FHitResult& HitResult) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleDead(const FVector& HitLocation) override;
