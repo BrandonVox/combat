@@ -206,6 +206,15 @@ void APlayerCharacter::HandleChargeTimerFinish()
 	}
 }
 
+void APlayerCharacter::HandleDead(const FVector& HitLocation)
+{
+	Super::HandleDead(HitLocation);
+	if (CombatPlayerController)
+	{
+		CombatPlayerController->ShowDefeatWidget();
+	}
+}
+
 void APlayerCharacter::ChargeAttackButtonReleased()
 {
 	if (GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))

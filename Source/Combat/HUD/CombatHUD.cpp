@@ -30,3 +30,21 @@ void ACombatHUD::CreateMenuWidget()
 		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
 	}
 }
+
+void ACombatHUD::CreateDefeatWidget(APlayerController* PlayerController)
+{
+	if (PlayerController && DefeatWidgetClass)
+	{
+		DefeatWidget = CreateWidget<UUserWidget>(PlayerController, DefeatWidgetClass);
+	}
+}
+
+void ACombatHUD::ShowDefeatWidget(APlayerController* PlayerController)
+{
+	if (DefeatWidget && PlayerController)
+	{
+		DefeatWidget->AddToViewport();
+		PlayerController->SetInputMode(FInputModeUIOnly());
+		PlayerController->SetShowMouseCursor(true);
+	}
+}

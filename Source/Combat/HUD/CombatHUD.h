@@ -21,6 +21,10 @@ public:
 	void AddWidgetToViewport(UUserWidget* WidgetToShow);
 
 	void CreateMenuWidget();
+
+	void CreateDefeatWidget(APlayerController* PlayerController);
+
+	void ShowDefeatWidget(APlayerController* PlayerController);
 private:
 	// Combat
 	UPROPERTY(EditAnywhere, Category = Combat)
@@ -35,6 +39,13 @@ private:
 
 	UPROPERTY()
 	UUserWidget* MenuWidget;
+
+	// Defeat
+	UPROPERTY(EditAnywhere, Category = Defeat)
+	TSubclassOf<UUserWidget> DefeatWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* DefeatWidget;
 public:
 	FORCEINLINE UCombatWidget* GetCombatWidget() const { return CombatWidget; }
 	FORCEINLINE UUserWidget* GetMenuWidget() const { return MenuWidget; }

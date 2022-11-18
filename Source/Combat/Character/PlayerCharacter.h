@@ -50,7 +50,7 @@ protected:
 	// Charge Attack
 	void HandleChargeTimerFinish();
 
-
+	virtual void HandleDead(const FVector& HitLocation) override;
 
 private:
 	UPROPERTY()

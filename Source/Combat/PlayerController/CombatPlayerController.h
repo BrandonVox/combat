@@ -19,6 +19,7 @@ public:
 	void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth);
 	void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy);
 
+	void ShowDefeatWidget();
 
 protected:
 	virtual void BeginPlay() override;

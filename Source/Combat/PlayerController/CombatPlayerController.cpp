@@ -68,3 +68,12 @@ void ACombatPlayerController::UpdateEnergy_HUD(const float& NewEnergy, const flo
 	}
 }
 
+void ACombatPlayerController::ShowDefeatWidget()
+{
+	if (CombatHUD)
+	{
+		CombatHUD->CreateDefeatWidget(this);
+		CombatHUD->ShowDefeatWidget(this);
+	}
+}
+
