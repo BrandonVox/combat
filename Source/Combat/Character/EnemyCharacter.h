@@ -18,7 +18,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeMaxWalkSpeed(const float& NewValue);
 
-	void OnHitActor(const FHitResult& HitResult) override;
+	virtual void OnHitActor(const FHitResult& HitResult) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleDead(const FVector& HitLocation) override;
