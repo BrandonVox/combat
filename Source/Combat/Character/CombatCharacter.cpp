@@ -5,7 +5,7 @@
 #include "Combat/MyComponents/CombatComponent.h"
 #include "Combat/MyComponents/CollisionComponent.h"
 #include "Combat/MyComponents/StatsComponent.h"
-#include "Kismet/GameplayStatics.h"					
+#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 //
 
@@ -38,7 +38,7 @@ void ACombatCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	if (CombatComponent)
 	{
-		CombatComponent->SetCharacter(this);
+		CombatComponent->SetCombatCharacter(this);
 	}
 	if (CollisionComponent)
 	{
@@ -200,6 +200,33 @@ float ACombatCharacter::GetSpeed()
 	Velocity.Z = 0.f;
 	return Velocity.Size();
 }
+
+void ACombatCharacter::DecreaseEnergyByAttackType(EAttackType AttackType)
+{
+	if (StatsComponent)
+	{
+		StatsComponent->DecreaseEnergyByAttackType(AttackType);
+	}
+}
+
+bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
+}
+
+bool ACombatCharacter::HasEnoughEnergyForDefend()
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->GetEnergy() >= StatsComponent->GetEnergyCost_Defend();
+}
+
 
 
 
