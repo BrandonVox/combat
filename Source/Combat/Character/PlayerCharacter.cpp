@@ -13,6 +13,9 @@
 #include "Combat/PlayerController/CombatPlayerController.h"
 #include "CombatAnimInstance.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
 
 
 APlayerCharacter::APlayerCharacter()
@@ -62,6 +65,32 @@ void APlayerCharacter::PostInitializeComponents()
 	{
 		FocusComponent->SetPlayerCharacter(this);
 	}
+}
+
+bool APlayerCharacter::HasEnoughEnergyForThisAttackType(const EAttackType& AttackType)
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
+}
+
+void APlayerCharacter::DecreaseEnergyByAttackType(const EAttackType& AttackType)
+{
+	if (StatsComponent)
+	{
+		StatsComponent->DecreaseEnergyByAttackType(AttackType);
+	}
+}
+
+bool APlayerCharacter::HasEnoughEnergyForDefend()
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->GetEnergy() >= StatsComponent->GetEnergyCost_Defend();
 }
 
 void APlayerCharacter::BeginPlay()
@@ -147,6 +176,23 @@ void APlayerCharacter::SetupFocus(const bool& bDoFocus)
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
+}
+
+void APlayerCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
+{
+	if (IsDefending())
+	{
+		if (StatsComponent)
+		{
+			StatsComponent->DecreaseEnergy(StatsComponent->GetEnergyCost_Defend());
+		}
+		UGameplayStatics::PlaySoundAtLocation(this, DefendSound, HitLocation);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DefendHitImpact, HitLocation, FRotator());
+		return;
+	}
+
+	Super::OnReceivedPointDamage(DamagedActor, Damage, InstigatedBy,
+		HitLocation, FHitComponent, BoneName, ShotFromDirection, DamageType, DamageCauser);
 }
 
 // Light Attack

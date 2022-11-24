@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "CombatCharacter.h"
+#include "Combat/Interfaces/UseEnergyInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -11,7 +12,7 @@ class UFocusComponent;
 class ACombatPlayerController;
 
 UCLASS()
-class COMBAT_API APlayerCharacter : public ACombatCharacter
+class COMBAT_API APlayerCharacter : public ACombatCharacter, public IUseEnergyInterface
 {
 	GENERATED_BODY()
 public:
@@ -28,6 +29,18 @@ public:
 	void SetControllerRotation(const FRotator& NewControllerRotation);
 
 	void SetupFocus(const bool& bDoFocus);
+
+	virtual void OnReceivedPointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
+		FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
+		FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser) override;
+
+
+	// Interfaces
+	// Use Energy Interface
+	virtual bool HasEnoughEnergyForThisAttackType(const EAttackType& AttackType) override;
+	virtual void DecreaseEnergyByAttackType(const EAttackType& AttackType) override;
+	virtual bool HasEnoughEnergyForDefend() override;
+
 protected:
 	virtual void BeginPlay() override;
 	// Pressed

@@ -38,7 +38,7 @@ void ACombatCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	if (CombatComponent)
 	{
-		CombatComponent->SetCombatCharacter(this);
+		CombatComponent->SetCharacter(this);
 	}
 	if (CollisionComponent)
 	{
@@ -100,16 +100,7 @@ void ACombatCharacter::OnReceivedPointDamage(AActor* DamagedActor, float Damage,
 	const UDamageType* DamageType, AActor* DamageCauser)
 {
 
-	if (IsDefending())
-	{
-		if (StatsComponent)
-		{
-			StatsComponent->DecreaseEnergy(StatsComponent->GetEnergyCost_Defend());
-		}
-		UGameplayStatics::PlaySoundAtLocation(this, DefendSound, HitLocation);
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DefendHitImpact, HitLocation, FRotator());
-		return;
-	}
+
 
 	// tru mau
 	if (StatsComponent)
@@ -200,35 +191,6 @@ float ACombatCharacter::GetSpeed()
 	Velocity.Z = 0.f;
 	return Velocity.Size();
 }
-
-void ACombatCharacter::DecreaseEnergyByAttackType(EAttackType AttackType)
-{
-	if (StatsComponent)
-	{
-		StatsComponent->DecreaseEnergyByAttackType(AttackType);
-	}
-}
-
-bool ACombatCharacter::HasEnoughEnergyForThisAttackType(EAttackType AttackType)
-{
-	if (StatsComponent == nullptr)
-	{
-		return false;
-	}
-	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
-}
-
-bool ACombatCharacter::HasEnoughEnergyForDefend()
-{
-	if (StatsComponent == nullptr)
-	{
-		return false;
-	}
-	return StatsComponent->GetEnergy() >= StatsComponent->GetEnergyCost_Defend();
-}
-
-
-
 
 const float ACombatCharacter::GetDamageOfLastAttack()
 {

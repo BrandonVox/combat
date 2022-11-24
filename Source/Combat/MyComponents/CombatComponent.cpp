@@ -1,7 +1,8 @@
 
 
 #include "CombatComponent.h"
-#include "Combat/Character/CombatCharacter.h"
+#include "GameFramework/Character.h"
+#include "Combat/Interfaces/UseEnergyInterface.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -38,13 +39,21 @@ void UCombatComponent::RequestDefend()
 
 bool UCombatComponent::CanAttack(EAttackType AttackType)
 {
+	IUseEnergyInterface* UseEnergyCharacter = Cast<IUseEnergyInterface>(Character);
+	if (UseEnergyCharacter)
+	{
+		if (UseEnergyCharacter->HasEnoughEnergyForThisAttackType(AttackType) == false)
+		{
+			return false;
+		}
+	}
+
 	bool bDesiredCombatState =
 		CombatState == ECombatState::ECS_Free
 		|| (bIsReachedContinueAttackPoint && CombatState == ECombatState::ECS_Attack);
-	return 
-		bDesiredCombatState 
-		&& CombatCharacter 
-		&& CombatCharacter->HasEnoughEnergyForThisAttackType(AttackType);
+	return
+		bDesiredCombatState;
+
 }
 
 void UCombatComponent::Attack(const EAttackType& AttackType)
@@ -63,10 +72,17 @@ void UCombatComponent::Attack(const EAttackType& AttackType)
 
 bool UCombatComponent::CanDefend()
 {
-	return
-		CombatState == ECombatState::ECS_Free
-		&& CombatCharacter
-		&& CombatCharacter->HasEnoughEnergyForDefend();
+	IUseEnergyInterface* UseEnergyCharacter = Cast<IUseEnergyInterface>(Character);
+	if (UseEnergyCharacter)
+	{
+		if (UseEnergyCharacter->HasEnoughEnergyForDefend() == false)
+		{
+			return false;
+		}
+	}
+
+	return CombatState == ECombatState::ECS_Free;
+
 }
 
 void UCombatComponent::Defend()
@@ -126,9 +142,9 @@ UAnimMontage* UCombatComponent::GetAttackMontage(const EAttackType& AttackType)
 
 void UCombatComponent::PlayAnimMontage(UAnimMontage* MontageToPlay)
 {
-	if (CombatCharacter)
+	if (Character)
 	{
-		CombatCharacter->PlayAnimMontage(MontageToPlay);
+		Character->PlayAnimMontage(MontageToPlay);
 	}
 }
 
@@ -143,7 +159,13 @@ void UCombatComponent::ResetCombat()
 void UCombatComponent::ContinueCombo()
 {
 	bIsReachedContinueAttackPoint = true;
-	CombatCharacter->DecreaseEnergyByAttackType(LastAttackType);
+
+
+	IUseEnergyInterface* UseEnergyCharacter = Cast<IUseEnergyInterface>(Character);
+	if (UseEnergyCharacter)
+	{
+		UseEnergyCharacter->DecreaseEnergyByAttackType(LastAttackType);
+	}
 }
 
 const float UCombatComponent::GetDamageByAttackType(const EAttackType& AttackType)

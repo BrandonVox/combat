@@ -36,7 +36,7 @@ public:
 	virtual void OnHitActor(const FHitResult& HitResult);
 
 	UFUNCTION()
-		void OnReceivedPointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
+	virtual void OnReceivedPointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
 			FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
 			FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
@@ -50,10 +50,6 @@ public:
 
 	float GetSpeed();
 
-	void DecreaseEnergyByAttackType(EAttackType AttackType);
-
-	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
-	bool HasEnoughEnergyForDefend();
 
 
 	const float GetDamageOfLastAttack();
@@ -88,6 +84,12 @@ protected:
 
 	UPROPERTY()
 	ESpeedMode SpeedMode;
+
+	// Defend
+	UPROPERTY(EditAnywhere, Category = Defend)
+	USoundCue* DefendSound;
+	UPROPERTY(EditAnywhere, Category = Defend)
+	UParticleSystem* DefendHitImpact;
 private:
 
 
@@ -101,11 +103,7 @@ private:
 	UCollisionComponent* CollisionComponent;
 
 
-	// Defend
-	UPROPERTY(EditAnywhere, Category = Defend)
-	USoundCue* DefendSound;
-	UPROPERTY(EditAnywhere, Category = Defend)
-	UParticleSystem* DefendHitImpact;
+
 
 
 	// Hitted
