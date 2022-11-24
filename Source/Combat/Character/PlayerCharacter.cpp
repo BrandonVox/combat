@@ -149,6 +149,32 @@ void APlayerCharacter::SetupFocus(const bool& bDoFocus)
 	}
 }
 
+bool APlayerCharacter::HasEnoughEnergyForThisAttackType(const EAttackType& AttackType)
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->HasEnoughEnergyForThisAttackType(AttackType);
+}
+
+void APlayerCharacter::DecreaseEnergyByAttackType(const EAttackType& LastAttackType)
+{
+	if (StatsComponent)
+	{
+		StatsComponent->DecreaseEnergyByAttackType(LastAttackType);
+	}
+}
+
+bool APlayerCharacter::HasEnoughEnergyForDefend()
+{
+	if (StatsComponent == nullptr)
+	{
+		return false;
+	}
+	return StatsComponent->GetEnergy() >= StatsComponent->GetEnergyCost_Defend();
+}
+
 // Light Attack
 void APlayerCharacter::AttackButtonPressed()
 {

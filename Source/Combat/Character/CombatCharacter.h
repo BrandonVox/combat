@@ -50,12 +50,6 @@ public:
 
 	float GetSpeed();
 
-	void DecreaseEnergyByAttackType(EAttackType AttackType);
-
-	bool HasEnoughEnergyForThisAttackType(EAttackType AttackType);
-	bool HasEnoughEnergyForDefend();
-
-
 	const float GetDamageOfLastAttack();
 
 	void HandleDeadTimerFinished();
