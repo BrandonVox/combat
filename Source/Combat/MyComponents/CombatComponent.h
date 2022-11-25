@@ -25,7 +25,6 @@ public:
 	void RequestDefend();
 
 
-
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 
 	UFUNCTION(BlueprintCallable)

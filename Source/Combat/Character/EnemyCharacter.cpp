@@ -15,17 +15,7 @@ AEnemyCharacter::AEnemyCharacter()
 
 	WidgetComponent_Health->SetWidgetSpace(EWidgetSpace::Screen);
 	WidgetComponent_Health->SetDrawAtDesiredSize(true);
-	WidgetComponent_Health->AddLocalOffset( FVector(0.f, 0.f, 142.f));
-
-
-	// Energy
-	WidgetComponent_Energy =
-		CreateDefaultSubobject<UWidgetComponent>(TEXT("EnergyWidgetComponent"));
-	WidgetComponent_Energy->SetupAttachment(RootComponent);
-
-	WidgetComponent_Energy->SetWidgetSpace(EWidgetSpace::Screen);
-	WidgetComponent_Energy->SetDrawAtDesiredSize(true);
-	WidgetComponent_Energy->AddLocalOffset(FVector(0.f, 0.f, 130.f));
+	WidgetComponent_Health->AddLocalOffset( FVector(0.f, 0.f, 120.f));
 
 	if (GetCharacterMovement())
 	{
@@ -52,13 +42,6 @@ void AEnemyCharacter::BeginPlay()
 		UpdateHealth_HUD(StatsComponent->GetHealth(), StatsComponent->GetMaxHealth());
 	}
 
-
-	if (WidgetComponent_Energy)
-	{
-		EnergyWidget = Cast<UHealthWidget>(WidgetComponent_Energy->GetWidget());
-		UpdateEnergy_HUD(StatsComponent->GetEnergy(), StatsComponent->GetMaxEnergy());
-	}
-
 }
 
 void AEnemyCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth)
@@ -70,13 +53,7 @@ void AEnemyCharacter::UpdateHealth_HUD(const float& NewHealth, const float& MaxH
 	}
 }
 
-void AEnemyCharacter::UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy)
-{
-	if (EnergyWidget)
-	{
-		EnergyWidget->UpdateHealth_HUD(NewEnergy, MaxEnergy);
-	}
-}
+
 
 void AEnemyCharacter::ChangeMaxWalkSpeed(const float& NewValue)
 {

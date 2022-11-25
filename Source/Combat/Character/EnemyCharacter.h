@@ -14,7 +14,7 @@ class COMBAT_API AEnemyCharacter : public ACombatCharacter
 public:
 	AEnemyCharacter();
 	virtual void UpdateHealth_HUD(const float& NewHealth, const float& MaxHealth) override;
-	virtual void UpdateEnergy_HUD(const float& NewEnergy, const float& MaxEnergy) override;
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeMaxWalkSpeed(const float& NewValue);
 
@@ -27,12 +27,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UWidgetComponent* WidgetComponent_Health;
 
-	UPROPERTY(VisibleAnywhere)
-	UWidgetComponent* WidgetComponent_Energy;
+
 
 	UPROPERTY()
 	UHealthWidget* HealthWidget;
-
-	UPROPERTY()
-	UHealthWidget* EnergyWidget;
 };
