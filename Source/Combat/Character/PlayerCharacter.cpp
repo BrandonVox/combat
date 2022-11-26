@@ -271,6 +271,15 @@ void APlayerCharacter::ChargeAttackButtonReleased()
 
 void APlayerCharacter::SprintButtonPressed()
 {
+	// kiem tra co dang focus hay khong
+	// neu co thi return
+	if (FocusComponent && FocusComponent->IsFocusing())
+	{
+		return;
+	}
+
+
+
 	if (StatsComponent && StatsComponent->GetEnergy() > 0.f)
 	{
 		Sprint();
